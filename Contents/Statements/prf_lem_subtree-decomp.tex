@@ -1,0 +1,49 @@
+\begin{proof}
+We verify the two requirements of \cref{def:pbe} for the simplified profile $(\tbmp^*, \tbms^*)$ paired with the Bayes-consistent beliefs $\calF(\cdot \mid v_i)$ (\cref{fact:simplify}); the latter discharges part~(b), so it suffices to establish sequential rationality, part~(a)---that conditions~\eqref{eq:pricing-decomp}--\eqref{eq:threshold-decomp} make the prescribed actions optimal at every information set. We argue for a non-leaf, non-root player $i$ and fix $v_i \in \calV_i$; the root and leaf cases are analogous, involving only pricing or only buying. Consider an arbitrary deviation $(\tp_i, \tx_i)$ for player $i$, with all other players following $(\tbmp^*_{-i}, \tbmx^*_{-i})$, at an information set with observed history $h_i$, which by \cref{fact:simplify} is a function of $\bmv_{\Path(i)}$ and determines the offered price $p_i$ and the indicator $y_{\Parent(i)} \in \{0,1\}$. We first decompose player $i$'s expected selling profit into per-child gains (Steps 1--3), then identify the optimal actions and conclude sequential rationality (Step 4).
+
+\paragraph{Step 1: Conditional independence.}
+By the Markov property (\cref{asp:markov}), for distinct children $j_1, j_2 \in \Children(i)$, the subtree valuations $\bmv_{\Subtree(j_1)} = \{v_m\}_{m \in \Subtree(j_1)}$ and $\bmv_{\Subtree(j_2)} = \{v_m\}_{m \in \Subtree(j_2)}$ satisfy:
+\[
+\calF(\bmv_{\Subtree(j_1)}, \bmv_{\Subtree(j_2)} \mid v_i) = \calF(\bmv_{\Subtree(j_1)} \mid v_i) \cdot \calF(\bmv_{\Subtree(j_2)} \mid v_i),
+\]
+since the tree path between any $m_1 \in \Subtree(j_1)$ and $m_2 \in \Subtree(j_2)$ passes through $i$.
+
+\paragraph{Step 2: Factorization of conditional trade indicators.}
+For any $m \in \Subtree(j)$ where $j \in \Children(i)$, we show $y_{m \mid i} = x_j \cdot y_{m \mid j}$. By \cref{eq:y-conditional}:
+\begin{align*}
+y_{m \mid i} &= \prod_{\substack{\ell \in \Path(m) \cup \{m\} \\ \ell \notin \Path(i) \cup \{i\}}} x_\ell.
+\end{align*}
+Since $j \in \Children(i)$, we have $\Path(j) \cup \{j\} = \Path(i) \cup \{i,j\}$, and:
+\[
+\big(\Path(m) \cup \{m\}\big) \setminus \big(\Path(i) \cup \{i\}\big) = \{j\} \cup \Big[\big(\Path(m) \cup \{m\}\big) \setminus \big(\Path(j) \cup \{j\}\big)\Big].
+\]
+Therefore $y_{m \mid i} = x_j \cdot y_{m \mid j}$. In the special case $m = j$: $y_{j \mid i} = x_j$ and $y_{j \mid j} = 1$.
+
+\paragraph{Step 3: Gain decomposition.}
+The total expected selling profit of player $i$ decomposes as follows. The descendants of $i$ partition as $\Desc(i) = \bigsqcup_{j \in \Children(i)} \Subtree(j)$. Using this partition:
+\begin{align}
+&\bbE\bigg[\sum_{m \in \Desc(i)} \pi(m,i) \cdot p_m \cdot y_{m \mid i} \;\bigg|\; v_i\bigg] \nonumber\\
+&= \sum_{j \in \Children(i)} \bbE\bigg[\sum_{m \in \Subtree(j)} \pi(m,i) \cdot p_m \cdot x_j \cdot y_{m \mid j} \;\bigg|\; v_i\bigg] \label{eq:prf:decomp:partition}\\
+&= \sum_{j \in \Children(i)} \bbE_{\bmv_{\Subtree(j)} \sim \calF(\cdot | v_i)}\bigg[\sum_{m \in \Subtree(j)} \pi(m,i) \cdot p_m \cdot x_j \cdot y_{m \mid j}\bigg], \label{eq:prf:decomp:indep}
+\end{align}
+where \eqref{eq:prf:decomp:partition} uses Step~2, and \eqref{eq:prf:decomp:indep} uses Step~1 (the summand for subtree $j$ depends only on $\bmv_{\Subtree(j)}$). By definition (\cref{eq:gain-child}), this equals $\sum_{j \in \Children(i)} G^{(j)}_i(v_i, p_j)$. Combined with the utility expansion~\eqref{eq:prf:simplify:factor} from the proof of \cref{lem:simplify-sell}, the conditional expected utility of player $i$ is
+\begin{equation}
+\label{eq:lem2:decomp}
+\bbE_{\bmv_{-i} \sim \calF(\cdot \mid v_i)}\!\big[U_i(h(\tp_i, \tbmp^*_{-i}, \tx_i, \tbmx^*_{-i}; \bmv); v_i) \mid h_i\big] = x_i \cdot y_{\Parent(i)} \cdot \Big[(v_i - p_i) + \sum_{j \in \Children(i)} G^{(j)}_i(v_i, p_j)\Big],
+\end{equation}
+where $x_i = \tx_i(h_i, v_i) \in \{0,1\}$ and $p_j = \tp_i(h_i, j, v_i)$ are player $i$'s (possibly deviating) actions.
+
+\paragraph{Step 4: Optimal actions and sequential rationality.}
+We show the right-hand side of~\eqref{eq:lem2:decomp} is maximized by the equilibrium actions prescribed by $(\tbmp^*, \tbms^*)$, for every realization of $h_i$. As $x_i \cdot y_{\Parent(i)} \ge 0$, each term $G^{(j)}_i(v_i, p_j)$ depends only on $p_j$ (given $v_i$), and the children's prices enter the bracket additively and independently, the bracket is maximized by choosing $p_j \in \argmax_{p_j \ge 0} G^{(j)}_i(v_i, p_j)$ for every $j$, attaining the value
+\[
+\Phi_i(v_i) \;\coloneqq\; (v_i - p_i) + \sum_{j \in \Children(i)} \max_{p_j \ge 0} G^{(j)}_i(v_i, p_j);
+\]
+this is exactly the pricing rule~\eqref{eq:pricing-decomp}. Given these prices, the prefactor $x_i \cdot y_{\Parent(i)}$ is maximized over $x_i \in \{0,1\}$ by $x_i = \one\{\Phi_i(v_i) \ge 0\}$ when $y_{\Parent(i)} = 1$, and the value is $0$ regardless of $x_i$ when $y_{\Parent(i)} = 0$. By the threshold rule~\eqref{eq:threshold-decomp}, $\ts^*_i(v_i) = v_i + \sum_{j} \max_{p_j \ge 0} G^{(j)}_i(v_i, p_j)$, so $\Phi_i(v_i) \ge 0 \iff \ts^*_i(v_i) \ge p_i$; hence the optimal buying action coincides with the equilibrium threshold action $x_i = \one\{\ts^*_i(v_i) \ge p_i\}$.
+
+Therefore, at \emph{every} information set $(h_i, v_i)$, the prescribed equilibrium actions maximize the conditional expected utility in~\eqref{eq:lem2:decomp}, which is precisely $\bbU_i\big((\tbmp^*, \tbms^*), \calF(\cdot \mid v_i) \mid h_i, v_i\big)$ of~\eqref{eq:cond-utility}; that is, for every deviation $(\tp_i, \tx_i)$,
+\[
+\bbU_i\big((\tbmp^*, \tbms^*), \calF(\cdot \mid v_i) \mid h_i, v_i\big) \;\ge\; \bbU_i\big((\tp_i, \tbmp^*_{-i}, \tx_i, \tbmx^*_{-i}), \calF(\cdot \mid v_i) \mid h_i, v_i\big).
+\]
+This is the sequential-rationality requirement~(a) of \cref{def:pbe}. As $i$, $v_i$, and $h_i$ were arbitrary, and the beliefs $\calF(\cdot \mid v_i)$ are Bayes-consistent (\cref{fact:simplify}), the profile $(\tbmp^*, \tbms^*)$ is a perfect Bayesian equilibrium.
+\qed
+\end{proof}

@@ -1,0 +1,102 @@
+\begin{proof}
+We prove that \cref{alg:exact,alg:forward-dp} correctly compute a perfect Bayesian equilibrium in $O(N^2 S^4)$ time.
+
+\paragraph{Price Simplification.}
+For a fixed non-leaf player $i$ and child $j \in \Children(i)$, define the finite set of candidate prices:
+\begin{equation}
+\label{eq:prf:algo:candidates}
+\calP_j \;=\; \big\{s^*(j, \ell) : \ell \in [S]\big\}.
+\end{equation}
+We show that the optimal price $p^*_j$ must lie in $\calP_j$ (or be $0$ if all values in $\calP_j$ are negative).
+
+\emph{Case 1:} All elements in $\calP_j$ are negative. For any $p_j \ge 0$ and any $\ell \in [S]$: $\ts^*_j(w_\ell) = s^*(j,\ell) < 0 \le p_j$, so $x_j = \one\{s^*(j,\ell) \ge p_j\} = 0$. Therefore $G^{(j)}_i(w_k, p_j) = 0$ for all $p_j \ge 0$, and setting $p_j = 0$ is optimal.
+
+\emph{Case 2:} $\calP_j$ contains nonneg elements. Let $s_{\max} = \max \calP_j$. Setting $p_j > s_{\max}$ gives $G^{(j)}_i(w_k, p_j) = 0$, weakly dominated by $p_j = s_{\max}$. For $p_j \le s_{\max}$, consider the effect of increasing $p_j$ within an interval $(s^*(j, \ell_a), s^*(j, \ell_b))$ between two consecutive values in $\calP_j$. In this interval, the set of buying types $\{\ell : s^*(j,\ell) \ge p_j\}$ remains constant, while the per-trade revenue $\pi(j,i) \cdot p_j$ weakly increases. Hence:
+\begin{equation}
+\label{eq:prf:algo:monotone}
+G^{(j)}_i(w_k, s^*(j,\ell_b)) \;\ge\; G^{(j)}_i(w_k, p_j) \quad \text{for all } p_j \in (s^*(j,\ell_a), s^*(j,\ell_b)).
+\end{equation}
+This shows that the optimal $p^*_j$ lies in $\calP_j$.
+
+\paragraph{Backward Dynamic Program.}
+\cref{alg:exact} processes the tree bottom-up with terminal condition $s^*(i,k) = w_k$ for all leaves $i \in \calL$ and $k \in [S]$. For each non-leaf node $i$ (processed after all descendants), each valuation $w_k$, and each child $j \in \Children(i)$, the algorithm enumerates candidate prices $p_j = s^*(j, k')$ for $k' \in \calP_j$ and computes the gain $G^{(j)}_i(w_k, s^*(j,k'))$ via the Forward DP (\cref{alg:forward-dp}). The optimal price is then:
+\begin{equation}
+\label{eq:prf:algo:optimal}
+l^*(j,k) \in \argmax_{k' \in \calP_j} G^{(j)}_i(w_k, s^*(j,k')), \qquad p^*(j,k) = s^*(j, l^*(j,k)).
+\end{equation}
+After processing all children, the threshold value is updated:
+\begin{equation}
+\label{eq:prf:algo:threshold}
+s^*(i,k) = w_k + \sum_{j \in \Children(i)} G^{(j)}_i\big(w_k, p^*(j,k)\big).
+\end{equation}
+
+\paragraph{Computing the Gain Function via Forward DP.}
+The core difficulty is computing $G^{(j)}_i(w_k, p_j)$, which involves the expected reallocated profit from all trades in $\Subtree(j)$. By \cref{eq:gain-child}:
+\begin{equation}
+\label{eq:prf:algo:gain-expand}
+G^{(j)}_i(w_k, p_j) = \bbE_{\bmv_{\Subtree(j)} \sim \calF(\cdot|w_k)}\bigg[\sum_{m \in \Subtree(j)} \pi(m,i) \cdot p_m \cdot x_j \cdot y_{m|j}\bigg].
+\end{equation}
+Naively evaluating this sum over all possible valuation profiles $\bmv_{\Subtree(j)}$ leads to exponential complexity. We overcome this using a Forward DP.
+
+Define the event $Y(m, \ell)$ for $m \in \Subtree(j)$ and $\ell \in [S]$ as:
+\[
+Y(m, \ell) \;\coloneqq\; \{v_m = w_\ell\} \cap \{y_{m|j} \cdot x_j = 1\},
+\]
+\ie, player $m$ has valuation $w_\ell$ and all trades from $j$ down to $m$ (including both $j$ and $m$) have occurred.
+
+\emph{Initialization (trade $j$).} For $\ell \in [S]$, given $v_i = w_k$ and price $p_j = s^*(j,k')$:
+\begin{equation}
+\label{eq:prf:algo:Y-init}
+\Pr[Y(j, \ell)] = \Pr[v_j = w_\ell, x_j = 1 \mid v_i = w_k] = q_{j,k,\ell} \cdot \one\{s^*(j,\ell) \ge s^*(j,k')\}.
+\end{equation}
+The second equality uses: $v_j = w_\ell$ has probability $q_{j,k,\ell}$ conditioned on $v_i = w_k$ (by \cref{asp:markov}), and $x_j = \one\{s^*(j,\ell) \ge p_j\} = \one\{s^*(j,\ell) \ge s^*(j,k')\}$ by the threshold strategy (\cref{cor:simplify-buy}).
+
+\emph{Recursion (from $m$ to its child $m'$).} For each $m \in \Subtree(j)$, $m' \in \Children(m)$, and $\ell' \in [S]$:
+\begin{equation}
+\label{eq:prf:algo:Y-recurse}
+\begin{aligned}
+\Pr[Y(m', \ell')] &= \Pr[v_{m'} = w_{\ell'},\; y_{m'|j} \cdot x_j = 1] \\
+&= \sum_{\ell \in [S]} \Pr[v_{m'} = w_{\ell'},\; x_{m'} = 1,\; Y(m,\ell)] \\
+&= \sum_{\ell \in [S]} \Pr[v_{m'} = w_{\ell'},\; x_{m'} = 1 \mid Y(m,\ell)] \cdot \Pr[Y(m,\ell)] \\
+&= \sum_{\ell \in [S]} \Pr[v_{m'} = w_{\ell'},\; x_{m'} = 1 \mid v_m = w_\ell] \cdot \Pr[Y(m,\ell)] \\
+&= \sum_{\ell \in [S]} q_{m',\ell,\ell'} \cdot \one\{s^*(m',\ell') \ge p^*(m',\ell)\} \cdot \Pr[Y(m,\ell)].
+\end{aligned}
+\end{equation}
+The fourth equality uses the Markov property: conditioned on $v_m = w_\ell$, the event $\{v_{m'} = w_{\ell'}, x_{m'} = 1\}$ is independent of the events involving ancestors of $m$. The fifth equality uses $\Pr[v_{m'} = w_{\ell'} \mid v_m = w_\ell] = q_{m',\ell,\ell'}$ and $x_{m'} = \one\{s^*(m',\ell') \ge p^*(m',\ell)\}$.
+
+\paragraph{Accumulating the Gain.}
+We express $G^{(j)}_i(w_k, p_j)$ using the $Y$-probabilities. For each edge $(m, m')$ with $m \in \Subtree(j)$ and $m' \in \Children(m)$, define the one-shot revenue when $v_m = w_\ell$:
+\begin{equation}
+\label{eq:prf:algo:oneshot}
+r(m', \ell) \;\coloneqq\; p^*(m', \ell) \cdot \sum_{\ell' \in [S]} q_{m',\ell,\ell'} \cdot \one\{s^*(m', \ell') \ge p^*(m', \ell)\}.
+\end{equation}
+The contribution of trade $m'$ to the gain is:
+\begin{align}
+&\bbE\big[\pi(m',i) \cdot p^*(m', v_m) \cdot x_j \cdot y_{m'|j} \;\big|\; v_i = w_k\big] \nonumber\\
+&= \sum_{\ell \in [S]} \pi(m',i) \cdot p^*(m', \ell) \cdot \Pr[v_m = w_\ell,\; x_{m'} = 1,\; y_{m|j} \cdot x_j = 1] \nonumber\\
+&= \sum_{\ell \in [S]} \pi(m',i) \cdot p^*(m', \ell) \cdot \Pr[Y(m,\ell)] \cdot \sum_{\ell'} q_{m',\ell,\ell'} \cdot \one\{s^*(m',\ell') \ge p^*(m',\ell)\} \nonumber\\
+&= \sum_{\ell \in [S]} \pi(m',i) \cdot r(m', \ell) \cdot \Pr[Y(m,\ell)]. \label{eq:prf:algo:contrib}
+\end{align}
+For the root of the subtree ($m' = j$, with $m = i$), we use $p_j = s^*(j,k')$:
+\begin{equation}
+\label{eq:prf:algo:root-contrib}
+\text{root contribution} = \pi(j,i) \cdot s^*(j,k') \cdot \sum_{\ell \in [S]} \Pr[Y(j,\ell)].
+\end{equation}
+Summing~\eqref{eq:prf:algo:contrib} over all edges in $\Subtree(j)$ and adding~\eqref{eq:prf:algo:root-contrib}:
+\begin{equation}
+\label{eq:prf:algo:gain-formula}
+G^{(j)}_i(w_k, s^*(j,k')) = \pi(j,i) \cdot s^*(j,k') \cdot \sum_{\ell} \Pr[Y(j,\ell)] + \sum_{\substack{m \in \Subtree(j) \\ m' \in \Children(m)}} \sum_{\ell \in [S]} \pi(m',i) \cdot r(m',\ell) \cdot \Pr[Y(m,\ell)].
+\end{equation}
+This is precisely the computation in \cref{alg:forward-dp}.
+
+\paragraph{Correctness.}
+By construction, the strategies $\ts^*_i(w_k) = s^*(i,k)$ and $\tp^*_j(w_k) = p^*(j,k)$ satisfy $p^*(j,k) \in \argmax_{p_j \in \calP_j} G^{(j)}_i(w_k, p_j)$ for each edge $(i,j)$ and each $k \in [S]$. By \eqref{SE:transform}, this strategy profile constitutes a perfect Bayesian equilibrium: each seller's pricing maximizes $G^{(j)}_i$ independently across children (\cref{lem:subtree-decomp}), and the threshold strategy is a best response (\cref{cor:simplify-buy}), so the prescribed actions are optimal at every information set.
+
+\paragraph{Complexity.}
+The recursion~\eqref{eq:prf:algo:Y-recurse} processes each edge $(m, m')$ in $\Subtree(j)$ in $O(S^2)$ time (summing over $\ell$ for each $\ell'$). Over all $|\Subtree(j)|$ nodes, the Forward DP takes $O(|\Subtree(j)| \cdot S^2)$ time. This is repeated for $S$ seller valuations and at most $S$ candidate prices, giving $O(|\Subtree(j)| \cdot S^4)$ per edge $(i,j)$. The Backward DP sums over all edges:
+\[
+\sum_{j \in \calI \setminus \{r\}} O(|\Subtree(j)| \cdot S^4) \;=\; O\bigg(\sum_{j \in \calI \setminus \{r\}} |\Subtree(j)|\bigg) \cdot S^4 \;=\; O(N d\, S^4) \;\le\; O(N^2 S^4),
+\]
+using $\sum_{j \neq r} |\Subtree(j)| = \sum_{m \in \calI} |\Path(m)| = \sum_{m} \mathrm{depth}(m) \le N d$: each node $m$ is counted once for each $j \neq r$ with $m \in \Subtree(j)$---namely $m$ itself and each of its strict ancestors below the root, $\mathrm{depth}(m)$ in total---where $d = \max_m \mathrm{depth}(m)$ is the depth of $\calT$, at most $N$.
+\qed
+\end{proof}

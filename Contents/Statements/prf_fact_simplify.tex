@@ -1,0 +1,18 @@
+\begin{proof}
+Fix the strategy profile $(\tbmp, \tbmx)$. By the game dynamics (\cref{def:game-evolve}), every price and decision recorded in $h_i$ (see~\eqref{eq:hi}) is computed recursively from the valuations of the strict ancestors of $i$; hence there is a deterministic map $\phi_i$ with $h_i = \phi_i(\bmv_{\Path(i)})$, where $\bmv_{\Path(i)} = \{v_\ell\}_{\ell \in \Path(i)}$. It therefore suffices to prove the conditional independence $\bmv_{\Desc(i)} \perp \bmv_{\Path(i)} \mid v_i$.
+
+Write $A = \Path(i)$, $D = \Desc(i)$, and $O = \calI \setminus (A \cup \{i\} \cup D)$ for the remaining nodes. By \cref{asp:markov}, the joint density factorizes as
+\[
+f(\bmv) = \underbrace{f_r(v_r)\!\!\prod_{\ell \in A \setminus \{r\}}\!\! f_\ell(v_\ell \mid v_{\Parent(\ell)})}_{g(\bmv_A)} \cdot\; f_i(v_i \mid v_{\Parent(i)}) \cdot \underbrace{\prod_{\ell \in D} f_\ell(v_\ell \mid v_{\Parent(\ell)})}_{\eta(v_i, \bmv_D)} \cdot \prod_{\ell \in O} f_\ell(v_\ell \mid v_{\Parent(\ell)}),
+\]
+where we used that every $\ell \in D$ has $\Parent(\ell) \in \{i\} \cup D$, so the factor $\eta$ depends only on $(v_i, \bmv_D)$. Each node in $O$ lies in a subtree hanging off some node of $A$, so integrating out $\bmv_O$ over a complete collection of conditional densities gives $\int \prod_{\ell \in O} f_\ell(v_\ell \mid v_{\Parent(\ell)}) \, d\bmv_O = 1$. Thus
+\[
+f(\bmv_A, v_i, \bmv_D) = g(\bmv_A)\, f_i(v_i \mid v_{\Parent(i)})\, \eta(v_i, \bmv_D),
+\]
+and dividing by $\int f(\bmv_A, v_i, \bmv_D)\, d\bmv_D = g(\bmv_A)\, f_i(v_i \mid v_{\Parent(i)}) \int \eta(v_i, \bmv_D)\, d\bmv_D$ yields
+\[
+f(\bmv_D \mid v_i, \bmv_A) = \frac{\eta(v_i, \bmv_D)}{\int \eta(v_i, \bmv_D)\, d\bmv_D},
+\]
+which is independent of $\bmv_A$. Hence $\calF(\bmv_D \mid v_i, \bmv_A) = \calF(\bmv_D \mid v_i)$, and since $h_i = \phi_i(\bmv_A)$, we conclude $\calF(\bmv_{\Desc(i)} \mid v_i, h_i) = \calF(\bmv_{\Desc(i)} \mid v_i)$.
+\qed
+\end{proof}

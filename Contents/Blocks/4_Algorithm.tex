@@ -1,0 +1,168 @@
+\section{Equilibrium Computation}
+\label{sec:algo}
+
+Computing an equilibrium is far from immediate: a priori a player's strategy maps the exponentially large space of histories to multi-dimensional actions. Our structural reduction (\cref{subsec:simplification}) shows that, under the Markov property, equilibrium strategies collapse to history-independent pricing and threshold rules and a seller's optimal pricing strategy separates across its children's subtrees. Motivated by this, we further derive an exact polynomial-time algorithm for finitely supported valuations (\cref{subsec:exact-finite}) and an FPTAS for continuous valuations (\cref{subsec:approx-continuous}).
+For space limits, we defer some proofs of theorems to \cref{sec:omitted-proofs}.
+
+\subsection{Equilibrium Simplification}
+\label{subsec:simplification}
+
+We first show that the Markovian structure on trees yields a clean posterior, enabling significant strategy simplification.
+
+\begin{fact}
+\label{fact:simplify}
+Let $\calF$ satisfy \cref{asp:markov}. For any strategy profile $(\tbmp, \tbmx)$ and any player $i$, the posterior distribution of descendant valuations given $(v_i, h_i)$ satisfies $\calF(\bmv_{\Desc(i)} \mid v_i, h_i) = \calF(\bmv_{\Desc(i)} \mid v_i)$.
+\end{fact}
+
+Intuitively, $h_i = \phi_i(\bmv_{\Path(i)})$ is a deterministic function $\phi_i$ of the ancestor valuations $\bmv_{\Path(i)}$, which are conditionally independent of $\bmv_{\Desc(i)}$ given $v_i$ under \cref{asp:markov}.
+We now present the core simplification.
+
+\begin{restatable}{lemma}{lemSimplifySell}
+\label{lem:simplify-sell}
+Let $\calF$ satisfy \cref{asp:markov}.
+There exists a perfect Bayesian equilibrium $(\tbmp, \tbmx, \tbmmu)$ and functions $\{\tp^\dagger_j(v)\}_{j \in \calI \setminus \{r\}}$, $\{\tx^\dagger_i(v,p)\}_{i \in \calI \setminus \{r\}}$ such that:
+\begin{equation}
+\label{eq:lem:simplify-sell}
+\begin{aligned}
+\tp_i(h_i, j, v_i) &= \tp^\dagger_j(v_i), &&\forall i \notin \calL,\; j \in \Children(i),\; \forall v_i, h_i \\
+\tx_i(h_i, v_i) &= \tx^\dagger_i(v_i, p_i), &&\forall i \neq r,\; \forall v_i, h_i
+\end{aligned}
+\end{equation}
+\end{restatable}
+
+\cref{lem:simplify-sell} establishes that, despite the rich history space, equilibrium pricing for each child depends only on the seller's valuation and the buying decision only on the buyer's valuation and the offered price: by the Markov property, $h_i$ carries no information about descendant valuations beyond $v_i$, so player $i$ does not benefit from more knowledge on $h_i$.
+The proof is done by backward induction on the tree.
+
+\begin{restatable}{corollary}{corSimplifyBuy}
+\label{cor:simplify-buy}
+Under \cref{asp:markov}, there exists a perfect Bayesian equilibrium $(\tbmp, \tbmx, \tbmmu)$ satisfying the conclusions of \cref{lem:simplify-sell} in which each buyer $i \in \calI \setminus \{r\}$ uses a threshold strategy: there exists a function $\ts^\dagger_i: \calV_i \to \bbR$ such that
+\begin{equation}
+\label{eq:threshold}
+\tx^\dagger_i(v_i, p_i) =
+\begin{cases}
+1, & \text{if } \ts^\dagger_i(v_i) \ge p_i, \\
+0, & \text{otherwise,}
+\end{cases}
+\end{equation}
+where $\ts^\dagger_i(v_i)$ represents the maximum price player $i$ is willing to pay.
+\end{restatable}
+
+By \cref{lem:simplify-sell,cor:simplify-buy}, a perfect Bayesian equilibrium can be characterized by a \emph{simplified strategy profile} $(\tbmp, \tbms) = (\{\tp_j\}_{j \in \calI \setminus \{r\}},\; \{\ts_i\}_{i \in \calI \setminus \{r\}})$, where $\tp_j: \calV_{\Parent(j)} \to \bbR_+$ is the pricing function and $\ts_i: \calV_i \to \bbR$ is the threshold function. We denote $(\tbmp^*, \tbms^*)$ as an equilibrium, if, by transforming $(\tbmp^*, \tbms^*)$ into original strategy profile $(\tbmp^*, \tbmx^*)$ as in \cref{eq:lem:simplify-sell,eq:threshold}, there is $\tbmmu^*$ such that $((\tbmp^*, \tbmx^*), \tbmmu^*)$ is a perfect Bayesian Equilibrium as in \cref{def:pbe}.
+
+The key structural property of the tree model is the following subtree decomposition. For each non-leaf player $i \in \calI \setminus \calL$, each child $j \in \Children(i)$, and a simplified strategy profile $(\tbmp, \tbms)$, we define the \emph{gain function} for player $i$ selling to child $j$ at price $p_j$:
+\begin{equation}
+\label{eq:gain-child}
+G^{(j)}_i(v_i, p_j) \;\coloneqq\; \bbE_{\bmv_{\Subtree(j)} \sim \calF(\cdot|v_i)} \bigg[ x_j \cdot \bigg(\pi(j,i)\cdot p_j + \sum_{m \in \Desc(j)} \pi(m,i) \cdot p_m \cdot y_{m \mid j} \bigg)\bigg],
+\end{equation}
+where, given the profile $(\tbmp, \tbms)$, $x_j = \one\{\ts_j(v_j) \ge p_j\}$, $p_m = \tp_m(v_{\Parent(m)})$, and $y_{m|j}$ (\cref{eq:y-conditional}) are determined within $\Subtree(j)$. Note that $G^{(j)}_i$ only depends on $(\tbmp, \tbms)$ restricted to $\Subtree(j)$; this is because the Markov property (\cref{asp:markov}) makes sibling subtrees conditionally independent given $v_i$.
+
+\begin{restatable}{lemma}{lemSubtreeDecomp}
+\label{lem:subtree-decomp}
+Under \cref{asp:markov}, a simplified strategy profile $(\tbmp^*, \tbms^*)$ is a perfect Bayesian equilibrium if, for every non-leaf player $i \in \calI \setminus \calL$ and every valuation $v_i \in \calV_i$, the following two conditions hold:
+\begin{enumerate}[left=0em]
+\item \textup{(Pricing decomposition)} The price offered to each child $j \in \Children(i)$ maximizes the corresponding gain:
+\begin{equation}
+\label{eq:pricing-decomp}
+\tp^*_j(v_i) \in \argmax_{p_j \ge 0}\; G^{(j)}_i(v_i, p_j), \quad \forall j \in \Children(i).
+\end{equation}
+\item \textup{(Threshold decomposition)} The threshold function decomposes as:
+\begin{equation}
+\label{eq:threshold-decomp}
+\ts^*_i(v_i) = v_i + \sum_{j \in \Children(i)} \max_{p_j \ge 0}\; G^{(j)}_i(v_i, p_j).
+\end{equation}
+\end{enumerate}
+\end{restatable}
+
+We write the two conditions~\eqref{eq:pricing-decomp}--\eqref{eq:threshold-decomp} compactly as
+\begin{equation}
+\label{SE:transform}
+\tp^*_j(v_i) \in \argmax_{p_j \ge 0}\; G^{(j)}_i(v_i, p_j), \qquad \ts^*_i(v_i) = v_i + \sum_{j \in \Children(i)} \max_{p_j \ge 0}\; G^{(j)}_i(v_i, p_j),
+\end{equation}
+for all $i \in \calI \setminus \calL$ and $j \in \Children(i)$.
+
+The proof, deferred to \cref{sec:omitted-proofs}, decomposes player $i$'s conditional expected utility into the additive per-child gains $\{G^{(j)}_i\}_{j \in \Children(i)}$ and shows that conditions~\eqref{eq:pricing-decomp}--\eqref{eq:threshold-decomp} make the prescribed actions maximize player $i$'s conditional expected utility at every information set.
+Therefore, computing a perfect Bayesian equilibrium reduces to finding a simplified strategy profile $(\tbmp^*, \tbms^*)$ satisfying~\eqref{SE:transform}.
+
+
+\subsection{Polynomial Algorithm for Finite Valuation Support}
+\label{subsec:exact-finite}
+
+When valuations take finitely many values, strategies admit finite tabular representations and we show that exact equilibria can be computed by a nested dynamic program.
+
+\begin{assumption}[Finite Valuation Support]
+\label{asp:finite}
+$\calF$ has finite valuation support if $\Pr[\forall i \in \calI,\; v_i \in W] = 1$ for $\bmv \sim \calF$, where $W = \{w_1, \ldots, w_S\} \subseteq \bbR$.
+\end{assumption}
+
+Under \cref{asp:finite}, strategies have finite representations: $p^*(i,k) \coloneqq \tp^*_i(w_k)$ and $s^*(i,k) \coloneqq \ts^*_i(w_k)$ for $i \in \calI \setminus \{r\},\; k \in [S]$. The conditional distribution is represented by $Q = \{q_{i,k,\ell}\}$ where $q_{i,k,\ell} \coloneqq f_i(v_i = w_\ell \mid v_{\Parent(i)} = w_k)$. We denote the finite-support model as $(\calT, \pi, Q)$.
+
+\begin{restatable}{theorem}{thmAlgoExact}
+\label{thm:algo-exact}
+Let \cref{asp:markov,asp:finite} hold. Given the model $(\calT, \pi, Q)$, there exists an algorithm (\cref{alg:exact}) that computes an exact perfect Bayesian equilibrium in $O\big(N d\, S^4\big)$ time, where $S = |W|$ is the support size and $d \coloneqq \max_{i \in \calI} |\Path(i)|$ is the depth of $\calT$.
+\end{restatable}
+
+\myx{TBA: (optional) add proof sketch; result comparison, indication}
+% The proof is in \cref{sec:omitted-proofs}. The algorithm (\cref{alg:exact}) processes the tree bottom-up: for each non-leaf $i$ and valuation $w_k$ it enumerates candidate prices per child $j$ and evaluates the gain via a forward dynamic program (\cref{alg:forward-dp}) that propagates trade probabilities through $\Subtree(j)$.
+% The bound $O(Nd\,S^4)$ refines the worst case $O(N^2 S^4)$: the instance-dependent cost is $\big(\sum_{j \neq r}|\Subtree(j)|\big) S^4 = \big(\sum_{m} \mathrm{depth}(m)\big) S^4 \le N d\, S^4$, so on a balanced tree ($d = O(\log N)$) it is only $O(N \log N \cdot S^4)$---faster than a chain of the same size, for which $d = \Theta(N)$.
+% The upshot is practical: the equilibrium induced by \emph{any} PRM, and hence its social welfare and transaction volume, can be computed efficiently, making the entire design space tractable to evaluate.
+
+\begin{algorithm}[t]
+\caption{Exact Perfect Bayesian Equilibrium on Trees}
+\label{alg:exact}
+\KwIn{Tree $\calT$ with node set $\calI$, PRM $\pi$, transition probabilities $Q = \{q_{i,k,\ell}\}$, support $W = \{w_1, \ldots, w_S\}$}
+\KwOut{Equilibrium strategies $\{s^*(i,k)\}_{i \in \calI \setminus \{r\},\, k \in [S]}$, $\{p^*(j,k)\}_{j \in \calI \setminus \{r\},\, k \in [S]}$}
+\For{each leaf $i \in \calL$, $k \in [S]$}{
+  $s^*(i,k) \gets w_k$\;
+}
+\For{each non-leaf $i \in \calI \setminus \calL$ in bottom-up order}{
+  \For{$k = 1, \ldots, S$}{
+    \For{each $j \in \Children(i)$}{
+      $\calP_j \gets \{\ell \in [S] : s^*(j, \ell) \ge 0\}$\;
+      \eIf{$\calP_j = \varnothing$}{
+        $p^*(j, k) \gets 0$;\quad $G^*_j \gets 0$\;
+      }{
+        \For{each $k' \in \calP_j$}{
+          $G(k') \gets \textsc{ForwardDP}(\calT, \pi, Q, j, i, k, s^*(j, k'))$\;
+        }
+        $l^* \gets \argmax_{k' \in \calP_j} G(k')$\;
+        $p^*(j, k) \gets s^*(j, l^*)$;\quad $G^*_j \gets G(l^*)$\;
+      }
+    }
+    $s^*(i, k) \gets w_k + \sum_{j \in \Children(i)} G^*_j$\;
+  }
+}
+\textbf{return}: $\{s^*(i,k)\}_{i \in \calI \setminus \{r\},\, k \in [S]}$, $\{p^*(j,k)\}_{j \in \calI \setminus \{r\},\, k \in [S]}$
+\end{algorithm}
+
+\subsection{FPTAS for Continuous Valuation Support}
+\label{subsec:approx-continuous}
+
+With continuous support, exact equilibria generally lack a finite representation, so we seek an $\varepsilon$-approximate equilibrium---relaxing the conditions of \cref{SE:transform} by a tolerance $\varepsilon$.
+% ---via an FPTAS, with running time polynomial in $N$ and $\varepsilon^{-1}$.
+
+\begin{definition}[$\varepsilon$-Approximate Equilibrium]
+\label{def:eps-equilibrium}
+Given a profile $(\tbmp, \tbms)$, let $\ts^\dagger_i(v_i) \coloneqq v_i + \sum_{j \in \Children(i)} \max_{p_j \ge 0} G^{(j)}_i(v_i, p_j)$ be the \emph{threshold} of player $i$ against the others' strategies in $(\tbmp, \tbms)$. The profile $(\tbmp, \tbms)$ is an \emph{$\varepsilon$-approximate equilibrium} if, for every player $i$ and every $v_i \in \calV_i$, both of the following hold:
+\begin{enumerate}[label=(\alph*),left=0em]
+\item \textup{(Pricing near-optimality)} For all $j \in \Children(i)$,
+\[
+G^{(j)}_i(v_i, \tp_j(v_i)) - \max_{p_j \ge 0} G^{(j)}_i(v_i, p_j) \;\ge\; -\varepsilon \cdot \max\{1, \ts^\dagger_i(v_i)\}.
+\]
+\item \textup{(Threshold accuracy)} $\;|\ts_i(v_i) - \ts^\dagger_i(v_i)| \le \varepsilon \cdot \max\{1, \ts^\dagger_i(v_i)\}$.
+\end{enumerate}
+At $\varepsilon = 0$ both conditions reduce to~\eqref{SE:transform}, recovering an exact perfect Bayesian equilibrium (\cref{lem:subtree-decomp}); $\varepsilon$ thus measures how far each player is from best-responding.
+\end{definition}
+
+\begin{definition}[Log-Lipschitzness]
+\label{asp:lipschitz}
+Under \cref{asp:markov} with each valuation supported on $[L_0, H_0]$, we say $f_i$ is $K_0$-log-Lipschitz if, for each $i \in \calI \setminus \{r\}$ and all $v_i, a, b \in [L_0, H_0]$:
+$|\log f_i(v_i \mid a) - \log f_i(v_i \mid b)| \le K_0\,|a - b|$.
+\end{definition}
+
+\begin{restatable}{theorem}{thmAlgoApprox}
+\label{thm:algo-approx}
+Under \cref{asp:markov}, assume $f_i$ is $K_0$-log-Lipschitz for all $i \in \calI \setminus \{r\}$, and each $v_i$ has support $[L_0, H_0] \subseteq \bbR$. Then there exists an algorithm (\cref{alg:approx}) that outputs an $\varepsilon$-approximate equilibrium in $\poly(N, \varepsilon^{-1}, H_0 - L_0, K_0)$ time.
+\end{restatable}
+
+The algorithm (\cref{alg:approx}, deferred to \cref{sec:omitted-proofs}) discretizes the continuous supports into a finite grid, forming a discretized model with distribution $\hat\calF$, and computes its exact equilibrium via \cref{alg:exact}. The proof, also in \cref{sec:omitted-proofs}, shows that exact equilibria of the discretized model are approximate equilibria of the original continuous model, using the log-Lipschitz condition to bound the discretization error.
+Consequently, the discretized model is a provably faithful approximation for the continuous one.

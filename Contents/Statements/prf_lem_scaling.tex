@@ -1,0 +1,50 @@
+\begin{proof}
+\smallskip\noindent\textit{Part 1 (Linearity).}\enspace
+We argue by backward induction on the tree that every equilibrium threshold $\ts^*_i$ and every posted price $\tp^*_j$ is homogeneous of degree one. For a leaf $i$, $\ts^*_i(v) = v = \hat{s}_i v$ with $\hat{s}_i = 1$. Fix a non-leaf $i$ and assume the claim for every node in $\Desc(i)$. Fix a child $j \in \Children(i)$ and recall from \cref{eq:gain-child} that, writing $\bmw \coloneqq \bmv_{\Subtree(j)}$,
+\[
+G^{(j)}_i(v_i, p) = \bbE_{\bmw \sim \calF(\cdot \mid v_i)}\big[\Psi_p(\bmw)\big],
+\qquad
+\Psi_p(\bmw) \coloneqq \one\{\ts^*_j(w_j) \ge p\}\Big(\pi(j,i)\,p + \!\!\sum_{m \in \Desc(j)}\!\! \pi(m,i)\, \tp^*_m(w_{\Parent(m)})\, y_{m \mid j}(\bmw)\Big),
+\]
+where $y_{m\mid j}(\bmw) = \prod_{\ell}\one\{\ts^*_\ell(w_\ell) \ge \tp^*_\ell(w_{\Parent(\ell)})\}$ ranges over the edges on the path from $j$ to $m$ (\cref{eq:y-conditional}). We establish $G^{(j)}_i(\alpha v_i, \alpha p) = \alpha\, G^{(j)}_i(v_i, p)$ for every $\alpha > 0$ in two steps.
+
+\emph{Step 1 (the conditional law scales).} We claim that if $\bmw \sim \calF(\cdot \mid v_i)$ then $\alpha \bmw \sim \calF(\cdot \mid \alpha v_i)$. By the Markov property (\cref{asp:markov}), the conditional law of $\bmw$ given $v_i$ factorizes along the subtree,
+\[
+\calF(\bmw \mid v_i) = f_j(w_j \mid v_i)\!\!\prod_{m \in \Desc(j)}\!\! f_m\big(w_m \mid w_{\Parent(m)}\big),
+\]
+with the root factor conditioned on $v_i$. By homogeneity (\cref{asp:homo}), each conditional CDF satisfies $F_m(\alpha x \mid \alpha y) = F_m(x \mid y)$; equivalently, if $W \sim F_m(\cdot \mid y)$ then $\alpha W \sim F_m(\cdot \mid \alpha y)$. Applying this to the top factor ($W = w_j$, $y = v_i$) scales $w_j \mapsto \alpha w_j$ and its conditioning value $v_i \mapsto \alpha v_i$; the scaled $\alpha w_j$ is in turn the conditioning value for the factors of its children, so the rescaling propagates down the subtree by induction on depth. Hence the joint law of $\alpha\bmw$ is exactly $\calF(\cdot \mid \alpha v_i)$, proving the claim.
+
+\emph{Step 2 (the integrand scales).} We claim $\Psi_{\alpha p}(\alpha \bmw) = \alpha\,\Psi_p(\bmw)$ pointwise. Every indicator is invariant: by the inductive hypothesis $\ts^*_\ell(\alpha w_\ell) = \alpha\ts^*_\ell(w_\ell)$ and $\tp^*_\ell(\alpha w_{\Parent(\ell)}) = \alpha\tp^*_\ell(w_{\Parent(\ell)})$ for every $\ell \in \Desc(i)$, so
+\[
+\one\{\ts^*_j(\alpha w_j) \ge \alpha p\} = \one\{\ts^*_j(w_j) \ge p\},
+\qquad
+\one\{\ts^*_\ell(\alpha w_\ell) \ge \tp^*_\ell(\alpha w_{\Parent(\ell)})\} = \one\{\ts^*_\ell(w_\ell) \ge \tp^*_\ell(w_{\Parent(\ell)})\},
+\]
+whence $\one\{\ts^*_j(\alpha w_j)\ge\alpha p\} = \one\{\ts^*_j(w_j)\ge p\}$ and $y_{m\mid j}(\alpha\bmw) = y_{m\mid j}(\bmw)$. The monetary terms scale by $\alpha$: $\pi(j,i)(\alpha p) = \alpha\,\pi(j,i)\,p$ and $\pi(m,i)\tp^*_m(\alpha w_{\Parent(m)}) = \alpha\,\pi(m,i)\tp^*_m(w_{\Parent(m)})$. As $\Psi_{\alpha p}(\alpha\bmw)$ is the (unchanged) indicator times the ($\alpha$-scaled) monetary bracket, the claim follows.
+
+Combining the two steps via the change of variables $\bmu = \alpha\bmw$,
+\[
+G^{(j)}_i(\alpha v_i, \alpha p)
+= \bbE_{\bmu \sim \calF(\cdot \mid \alpha v_i)}\big[\Psi_{\alpha p}(\bmu)\big]
+\overset{\text{Step 1}}{=} \bbE_{\bmw \sim \calF(\cdot \mid v_i)}\big[\Psi_{\alpha p}(\alpha\bmw)\big]
+\overset{\text{Step 2}}{=} \alpha\,\bbE_{\bmw \sim \calF(\cdot \mid v_i)}\big[\Psi_p(\bmw)\big]
+= \alpha\, G^{(j)}_i(v_i, p).
+\]
+Consequently $\max_{p \ge 0} G^{(j)}_i(\alpha v_i, p) = \alpha \max_{p \ge 0} G^{(j)}_i(v_i, p)$ (substitute $p = \alpha p'$), and the argmax set scales by $\alpha$, so its smallest element does too; hence $\tp^*_j(\alpha v_i) = \alpha\, \tp^*_j(v_i)$. Setting $\alpha = 1/v_i$ gives $\tp^*_j(v) = \hat{p}_j v$ with $\hat{p}_j = \tp^*_j(1) \ge 0$. Likewise, by the threshold decomposition~\eqref{eq:threshold-decomp}, $\ts^*_i(v_i) = v_i + \sum_{j \in \Children(i)} \max_{p \ge 0} G^{(j)}_i(v_i, p)$ is a sum of degree-one homogeneous functions, so $\ts^*_i(v) = \hat{s}_i v$ with $\hat{s}_i = \ts^*_i(1) \ge 1$. This closes the induction.
+
+\smallskip\noindent\textit{Part 2 (Mechanism-independent trade events).}\enspace
+Suppose $\pi(m,i) = 0$ for all $m \in \Desc(j)$. Then the downstream sum in $G^{(j)}_i$ vanishes and, using $\ts^*_j(v_j) = \hat{s}_j v_j$ from Part~1,
+\[
+G^{(j)}_i(v_i, p) = \pi(j,i)\, p \, \Pr[\hat{s}_j v_j \ge p \mid v_i] = \pi(j,i)\, p\, \big(1 - F_j(p/\hat{s}_j \mid v_i)\big).
+\]
+By \cref{asp:homo}, $F_j(p/\hat{s}_j \mid v_i) = F_j\big(p/(\hat{s}_j v_i) \mid 1\big)$. Substituting $p = \hat{s}_j v_i\, t$,
+\[
+G^{(j)}_i(v_i, \hat{s}_j v_i t) = \pi(j,i)\, \hat{s}_j v_i \cdot t\,\big(1 - F_j(t \mid 1)\big),
+\]
+whose maximizer over $t \ge 0$ is $\tau_j \in \argmax_{t \ge 0} t\,(1 - F_j(t \mid 1))$, depending only on $F_j$ (the positive factors $\pi(j,i)$ and $\hat{s}_j v_i$ do not affect the maximizer; the smallest-maximizer rule selects the same $\tau_j$ for every $v_i$). Hence $\tp^*_j(v_i) = \hat{s}_j \tau_j\, v_i$, and
+\[
+E_j(\tbmp^*, \tbms^*) = \{\ts^*_j(v_j) \ge \tp^*_j(v_i)\} = \{\hat{s}_j v_j \ge \hat{s}_j \tau_j v_i\} = \{v_j / v_i \ge \tau_j\},
+\]
+with $\tau_j$ depending only on $F_j$.
+\qed
+\end{proof}

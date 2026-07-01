@@ -1,0 +1,11 @@
+\newpage
+\section{Supplementary Experimental Results}
+\label{sec:app-experiments}
+
+This appendix collects experimental results deferred from \cref{sec:exp} for space.
+
+\subsection{Irregular-Tree Experiment}
+\label{app:irregular}
+Our complete-tree experiments in \cref{sec:exp} exploit level-symmetry to compute $d+1$ representative strategies. To confirm that the conclusions are not an artifact of this regularity, we additionally solve the \emph{irregular} tree of \cref{fig:tree-notation}---with unequal branching and depth---exactly and without any symmetry reduction, using the general-tree solver of \cref{thm:algo-exact}.
+\input{Contents/Floats/tab_exp_irregular}
+\Cref{tab:exp-irregular} reports, for this irregular instance, the same two metrics and four valuation models as \cref{tab:exp}. The qualitative picture is unchanged: every reallocation mechanism weakly beats RAW for all four models, OPT helps in all cases, and the instances of our general family again dominate the fixed-ratio TBDS---so the benefit of widening the design space is not special to symmetric trees.

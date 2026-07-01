@@ -1,0 +1,76 @@
+\begin{proof}
+For $k \in \{1, 2\}$, abbreviate the trade-event of trade $m$ under mechanism $\pi^k$ as $E^k_m \coloneqq E_m(\tbmp^{k,*}, \tbms^{k,*})$. We prove Part~(1) ($E^1_m = E^2_m$ for $m \neq j$) and Part~(2) ($E^1_j \subseteq E^2_j$) separately.
+
+\paragraph{Proof of Part~(1).}
+We partition the trades $m \in \calI \setminus \{r\}$ with $m \neq j$ into four groups: (A) $m \in \Desc(j)$; (B) $m \in \Subtree(c)$ for a sibling $c \in \Children(i) \setminus \{j\}$; (C) $m \in \Path(i) \cup \{i\}$, the trades on the root-to-$i$ path together with trade $i$; and (D) the remaining trades, $m \notin \Subtree(i) \cup \Path(i)$. Since $\Desc(i) = \bigsqcup_{c \in \Children(i)} \Subtree(c)$ and $\Subtree(i) = \{i\} \cup \Desc(i)$, these four groups partition $\{m \neq j\}$.
+
+\emph{Case A: $m \in \Desc(j)$.}
+By condition~(a), $\pi^1(n, k) = \pi^2(n, k)$ for all $k \neq i$. By the backward induction in \cref{lem:simplify-sell}, the equilibrium strategies internal to $\Subtree(j)$---namely the thresholds $\{\ts_n\}_{n \in \Subtree(j)}$ and the prices $\{\tp_n\}_{n \in \Desc(j)}$ for trades whose seller $\Parent(n)$ lies in $\Subtree(j)$---are computed bottom-up from the gain functions $\{G^{(n')}_n\}_{n \in \Subtree(j),\, n' \in \Children(n)}$, which depend on $\pi$ only through the reallocations $\{\pi(n, k) : n \in \Desc(j),\, k \in \Subtree(j) \cap \Path(n)\}$ to nodes inside $\Subtree(j)$. As none of these involve player $i$, they are identical under $\pi^1$ and $\pi^2$, so
+\begin{equation}
+\label{eq:prf:partial:subtree-same}
+\ts^{1,*}_n = \ts^{2,*}_n \;\; \forall n \in \Subtree(j), \qquad \tp^{1,*}_n = \tp^{2,*}_n \;\; \forall n \in \Desc(j).
+\end{equation}
+(The price $\tp_j$ offered by $i$ to $j$ is set by player $i$ and is \emph{not} internal to $\Subtree(j)$; it is treated in Part~(2).) For $m \in \Desc(j)$, both $\ts^*_m$ and $\tp^*_m$ appear in~\eqref{eq:prf:partial:subtree-same}, hence $E^1_m = \{\bmv : \ts^*_m(v_m) \ge \tp^*_m(v_{\Parent(m)})\} = E^2_m$.
+
+\emph{Case B: $m \in \Subtree(c)$ for some $c \in \Children(i) \setminus \{j\}$.}
+By \cref{lem:subtree-decomp}, both the equilibrium strategies within $\Subtree(c)$ and the price $\tp_c$ that $i$ offers to $c$ (the maximizer of $G^{(c)}_i$) depend on $\pi$ only through $\{\pi(n, k) : n \in \Subtree(c),\, k \in \calI\}$. Sibling subtrees are disjoint, so every $n \in \Subtree(c)$ satisfies $n \notin \Subtree(j)$; condition~(e) then gives $\pi^1(n, i) = \pi^2(n, i)$, while condition~(a) gives $\pi^1(n, k) = \pi^2(n, k)$ for all $k \neq i$. Hence $\pi^1(n, k) = \pi^2(n, k)$ for all $n \in \Subtree(c)$ and all $k$, so $G^{(c),1}_i = G^{(c),2}_i$ and the equilibria within $\Subtree(c)$ coincide, giving $E^1_m = E^2_m$. (Condition~(e) is exactly what rules out a spurious change in $i$'s pricing to its other children---the subtlety that distinguishes the tree from the chain, where no siblings exist.)
+
+\emph{Case C: $m \in \Path(i) \cup \{i\}$.}
+The seller in trade $m$ is $\Parent(m)$, and $\Parent(m) \in \Path(i)$: for $m \in \Path(i)$ the parent is a higher ancestor of $i$, and for $m = i$ it is $\Parent(i)$; in all cases it lies on the root-to-$i$ path. By condition~(d), both mechanisms reallocate to $\Parent(m)$ exactly as the baseline $\pi^0$, which pays only the direct seller; therefore $\pi^k(m', \Parent(m)) = 0$ for every strict descendant $m' \in \Desc(m)$ and $k \in \{1,2\}$. \cref{lem:scaling}(2), applied to trade $m$ under each mechanism, then yields $E^k_m = \{\bmv : v_m / v_{\Parent(m)} \ge \tau_m\}$ with $\tau_m$ depending only on $F_m$. Since $\tau_m$ is mechanism-independent, $E^1_m = E^2_m$.
+
+\emph{Case D: $m \notin \Subtree(i) \cup \Path(i)$.}
+Here $i \notin \Subtree(m)$, and $\Subtree(m)$ is disjoint from $\Subtree(i) \supseteq \Subtree(j)$. By condition~(a) the two mechanisms differ only in reallocation to $i$, and by conditions~(b),(c),(e) these differences occur only on trades in $\Subtree(j)$; none lie in $\Subtree(m)$. Hence both the threshold $\ts^*_m$ (computed within $\Subtree(m)$) and the price $\tp^*_m$ offered by $\Parent(m)$ (the maximizer of $G^{(m)}_{\Parent(m)}$, which by \cref{lem:subtree-decomp} depends only on reallocations within $\Subtree(m)$) are identical under $\pi^1$ and $\pi^2$, so $E^1_m = E^2_m$.
+
+\paragraph{Proof of Part~(2).}
+Since $\ts^{1,*}_j = \ts^{2,*}_j$ (proven in Part~(1)), it suffices to show $\tp^{2,*}_j(v_i) \le \tp^{1,*}_j(v_i)$ for all $v_i$, because then:
+\[
+E^1_j = \{\bmv : \ts^*_j(v_j) \ge \tp^{1,*}_j(v_i)\} \subseteq \{\bmv : \ts^*_j(v_j) \ge \tp^{2,*}_j(v_i)\} = E^2_j.
+\]
+We decompose the gain function $G^{(j),k}_i(v_i, p_j)$ under mechanism $\pi^k$ into one-shot and future components:
+\begin{equation}
+\label{eq:prf:partial:decomp}
+G^{(j),k}_i(v_i, p_j) \;=\; r^k_i(v_i, p_j) \;+\; d^k_i(v_i, p_j),
+\end{equation}
+where
+\begin{align*}
+r^k_i(v_i, p_j) &\;\coloneqq\; \bbE\!\big[\pi^k(j,i) \cdot p_j \cdot \one\{\ts^*_j(v_j) \ge p_j\} \;\big|\; v_i\big], \\
+d^k_i(v_i, p_j) &\;\coloneqq\; \bbE\!\bigg[\one\{\ts^*_j(v_j) \ge p_j\} \cdot \sum_{m \in \Desc(j)} \pi^k(m,i) \cdot p_m \cdot y_{m \mid j} \;\bigg|\; v_i\bigg].
+\end{align*}
+Here $r^k_i$ is the one-shot profit from trade $j$, and $d^k_i$ is the future reallocated profit from downstream trades. Note that the equilibrium strategies $\ts^*_j, \tp^*_m$ and the conditional trade indicators $y_{m \mid j}$ within $\Subtree(j)$ are the same under both mechanisms (proven above), so we drop the superscript $k$ from these quantities.
+
+Let $p^k = \tp^{k,*}_j(v_i)$ denote the optimal price under $\pi^k$. We establish two key monotonicity properties:
+
+\emph{Property 1.} If $\pi^1(j,i) = 0$, then condition~(b) forces $\pi^2(j,i) = 0$, so $r^1_i \equiv r^2_i \equiv 0$, $\Delta r_i \equiv 0$, and the implication~\eqref{eq:prf:partial:prop1} below holds trivially; assume henceforth $\pi^1(j,i) > 0$. Since $\ts^{1,*}_j = \ts^{2,*}_j$, we have $r^2_i(v_i, p) = \frac{\pi^2(j,i)}{\pi^1(j,i)}\, r^1_i(v_i, p)$ with coefficient $\frac{\pi^2(j,i)}{\pi^1(j,i)} \le 1$ by condition~(b). Consequently, for any $p, p'$:
+\begin{equation}
+\label{eq:prf:partial:prop1}
+r^2_i(v_i, p) \ge r^2_i(v_i, p') \quad\Longrightarrow\quad \Delta r_i(v_i, p) \le \Delta r_i(v_i, p'),
+\end{equation}
+where $\Delta r_i \coloneqq r^2_i - r^1_i$, because $\Delta r_i = (\frac{\pi^2(j,i)}{\pi^1(j,i)} - 1) r^1_i$ and the coefficient is nonpositive.
+
+\emph{Property 2.} For $p' > p$, we have $\one\{\ts^*_j(v_j) \ge p'\} \le \one\{\ts^*_j(v_j) \ge p\}$ pointwise. Since prices are nonnegative and $y_{m|j} \in \{0,1\}$, the integrand in $d^k_i$ is nonnegative and is multiplied by $\one\{\ts^*_j(v_j) \ge p\}$, so $d^k_i(v_i, p)$ is weakly decreasing in $p$. For $\Delta d_i(v_i, p) \coloneqq d^2_i(v_i, p) - d^1_i(v_i, p)$:
+\begin{align*}
+\Delta d_i(v_i, p) &= \bbE\bigg[\one\{\ts^*_j(v_j) \ge p\} \cdot \sum_{m \in \Desc(j)} \big(\pi^2(m,i) - \pi^1(m,i)\big) \cdot p_m \cdot y_{m|j} \;\bigg|\; v_i\bigg].
+\end{align*}
+By condition~(c), $\pi^2(m,i) - \pi^1(m,i) \ge 0$ for all $m \in \Desc(j)$, so the summand is nonnegative; hence $\Delta d_i(v_i, p)$ is also weakly decreasing in $p$.
+
+Now suppose for contradiction that $p^2 > p^1$. By optimality of $p^2$ under $\pi^2$:
+\[
+G^{(j),2}_i(v_i, p^2) \ge G^{(j),2}_i(v_i, p^1).
+\]
+Since $d^2_i$ is weakly decreasing in $p$ (Property~2) and $p^2 > p^1$, we have $d^2_i(v_i, p^2) \le d^2_i(v_i, p^1)$. Combined with the optimality inequality:
+\begin{equation}
+\label{eq:prf:partial:rstep}
+r^2_i(v_i, p^2) \ge r^2_i(v_i, p^1) \quad\Longrightarrow\quad \Delta r_i(v_i, p^2) \le \Delta r_i(v_i, p^1),
+\end{equation}
+where the implication follows from Property~1. Define the quantity:
+\begin{align*}
+S \;&\coloneqq\; \big[G^{(j),1}_i(v_i, p^2) - G^{(j),1}_i(v_i, p^1)\big] - \big[G^{(j),2}_i(v_i, p^2) - G^{(j),2}_i(v_i, p^1)\big] \\
+&=\; \big[\Delta r_i(v_i, p^1) - \Delta r_i(v_i, p^2)\big] + \big[\Delta d_i(v_i, p^1) - \Delta d_i(v_i, p^2)\big] \;\ge\; 0,
+\end{align*}
+where the first bracket is $\ge 0$ by~\eqref{eq:prf:partial:rstep} and the second bracket is $\ge 0$ by Property~2 (since $\Delta d_i$ is weakly decreasing and $p^2 > p^1$). Since $G^{(j),2}_i(v_i, p^2) \ge G^{(j),2}_i(v_i, p^1)$ and $S \ge 0$:
+\[
+G^{(j),1}_i(v_i, p^2) \ge G^{(j),1}_i(v_i, p^1).
+\]
+By optimality of $p^1$ under $\pi^1$, equality must hold: $G^{(j),1}_i(v_i, p^2) = G^{(j),1}_i(v_i, p^1)$. Then $S \ge 0$ forces $G^{(j),2}_i(v_i, p^2) = G^{(j),2}_i(v_i, p^1)$, so $p^1$ is also a maximizer of $G^{(j),2}_i(v_i, \cdot)$. But $p^1 < p^2$, and the smallest-maximizer tie-break selects the smallest maximizer under $\pi^2$; hence $p^2 = \tp^{2,*}_j(v_i) \le p^1$, contradicting $p^2 > p^1$. Therefore $\tp^{2,*}_j(v_i) \le \tp^{1,*}_j(v_i)$.
+\qed
+\end{proof}

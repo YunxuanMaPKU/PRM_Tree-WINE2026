@@ -1,0 +1,96 @@
+\section{Equilibrium Comparison between Profit Reallocation Mechanisms}
+\label{sec:theoretic}
+
+This section establishes that profit reallocation mechanisms on trees expand equilibrium trade events compared with the baseline mechanism. As there may be multiple equilibria, we fix the simplified perfect Bayesian equilibrium $(\tbmp^*, \tbms^*)$ satisfying~\eqref{SE:transform}, constructed by the backward induction of \cref{lem:simplify-sell,cor:simplify-buy}.
+Ties in each $\argmax$ is resolved by choosing the \emph{smallest} element. This tie-breaking rule is independent of $\pi$, thus does not provide advantages to some specific PRM. We impose two additional assumptions:
+
+\begin{assumption}[Positivity]
+\label{asp:posi}
+$\Pr_{\bmv \sim \calF}[v_i > 0] = 1$ for all $i \in \calI$.
+\end{assumption}
+
+\begin{assumption}[Homogeneity]
+\label{asp:homo}
+Under \cref{asp:markov}, for all $\alpha, w, v > 0$ and $i \in \calI \setminus \{r\}$: $F_i(\alpha v \mid \alpha w) = F_i(v \mid w)$.
+\end{assumption}
+
+Positivity says that a data product is always worth more than the cost of producing it. Homogeneity is a scaling property common in economic modeling~\citep[\S6.2]{AGT:nisan_algorithmic_2007}; it holds whenever the value of the output is proportional to the value of the input.
+
+Given a simplified strategy profile $(\tbmp, \tbms)$, we define the \emph{trade event} for trade $j \in \calI \setminus \{r\}$ as
+\begin{equation}
+\label{eq:trade-event}
+E_j(\tbmp, \tbms) \;\coloneqq\; \big\{\bmv \in \calV : \ts_j(v_j) \ge \tp_j(v_{\Parent(j)})\big\},
+\end{equation}
+\ie, the set of valuation profiles under which player $j$ is willing to buy at the price its parent offers.
+%  (the first-stage condition for trade $j$, independent of whether upstream trades succeed). Whenever a mechanism $\pi^k$ admits the equilibrium $(\tbmp^{k,*}, \tbms^{k,*})$, its trade event is $E_j(\tbmp^{k,*}, \tbms^{k,*})$.
+
+% Homogeneity endows the equilibrium with a scaling structure that is the workhorse of our comparisons: equilibrium strategies are linear in valuations, and any trade whose seller collects only a one-shot payment has a mechanism-independent threshold (the \emph{homogeneity scaling lemma}, \cref{lem:scaling} in \cref{sec:omitted-proofs}).
+
+
+\subsection{Local Comparison between Mechanisms}
+\label{subsec:partial}
+
+We first compare two PRMs that differ only along a single trade.
+
+\begin{definition}[Local Difference]
+\label{def:local-diff}
+For a non-root player $j \in \calI \setminus \{r\}$, let $i \coloneqq \Parent(j)$. Two PRMs $\pi^1$ and $\pi^2$ \emph{differ locally at trade $j$} if:
+\begin{enumerate}[label=(\alph*),left=0em]
+\item $\pi^1(m, k) = \pi^2(m, k)$ for all $m \in \calI \setminus \{r\}$ and all $k \in \calI \setminus \{i\}$.
+\item $\pi^1(j, i) \ge \pi^2(j, i)$: player $i$'s one-shot profit from trade $j$ weakly decreases from $\pi^1$ to $\pi^2$.
+\item $\pi^1(m, i) \le \pi^2(m, i)$ for all $m \in \Desc(j)$: player $i$'s reallocated profit from downstream trades weakly increases.
+\item $\pi^1(m, k) = \pi^2(m, k) = \pi^0(m, k)$ for all $k \in \Path(i)$ and all $m \in \calI \setminus \{r\}$: both mechanisms use baseline allocation for all strict ancestors of $i$.
+\item $\pi^1(m, i) = \pi^2(m, i)$ for all $m \notin \Subtree(j)$: player $i$'s reallocation is unchanged outside $\Subtree(j)$.
+\end{enumerate}
+\end{definition}
+
+\begin{restatable}{theorem}{thmPartial}
+\label{thm:partial}
+Let $\calF$ satisfy \cref{asp:markov,asp:posi,asp:homo}. Let $\pi^1, \pi^2$ be two PRMs that differ locally at trade $j$ (\cref{def:local-diff}). Let $(\tbmp^{k,*}, \tbms^{k,*})$ be the equilibrium under $\pi^k$ for $k \in \{1,2\}$. Then:
+\begin{enumerate}
+\item $E_m(\tbmp^{1,*}, \tbms^{1,*}) = E_m(\tbmp^{2,*}, \tbms^{2,*})$ for all $m \in \calI \setminus \{r\}$ with $m \neq j$.
+\item $E_j(\tbmp^{1,*}, \tbms^{1,*}) \subseteq E_j(\tbmp^{2,*}, \tbms^{2,*})$.
+\end{enumerate}
+\end{restatable}
+
+\myx{TBA: (optional) add proof sketch}
+% The proof, given in \cref{sec:omitted-proofs}, analyzes how the gain function $G^{(j)}_i$ changes as one-shot profit is traded for future reallocated profit. Under homogeneity (\cref{asp:homo}), equilibrium strategies scale linearly with valuations, so the strategies within $\Subtree(j)$---and, crucially, $i$'s pricing to its other children (condition (e))---are invariant to the local change in $\pi$, while $i$'s optimal price for child $j$ weakly decreases, enlarging $E_j$.
+
+
+\subsection{Comparison with Baseline Mechanism}
+\label{subsec:global}
+
+The local comparison result (\cref{thm:partial}) serves as the building block for a global comparison between any PRM and the baseline mechanism.
+
+\begin{restatable}{theorem}{thmGlobal}
+\label{thm:global}
+Let \cref{asp:markov,asp:posi,asp:homo} hold.
+Let $\pi^0$ be the baseline mechanism (\cref{def:baseline}) and $\pi$ be any feasible PRM satisfying \cref{def:prm}. Denote by $(\tbmp^{0,*}, \tbms^{0,*})$ and $(\tbmp^*, \tbms^*)$ the equilibria under $\pi^0$ and $\pi$, respectively. Then $E_j(\tbmp^{0,*}, \tbms^{0,*}) \subseteq E_j(\tbmp^*, \tbms^*)$ for all $j \in \calI \setminus \{r\}$.
+\end{restatable}
+
+\input{Contents/Statements/prf_thm_global}
+
+The expansion of every trade event translates directly into a social welfare guarantee.
+
+\begin{corollary}[Welfare Improvement]
+\label{cor:welfare}
+Let \cref{asp:markov,asp:posi,asp:homo} hold and let $\pi$ be any \emph{budget-balanced} PRM, \ie, $\sum_{i \in \calI \setminus \calL} \pi(j,i) = 1$ for every $j \in \calI \setminus \{r\}$, with equilibrium $(\tbmp^*, \tbms^*)$; let $(\tbmp^{0,*}, \tbms^{0,*})$ be the equilibrium under the baseline mechanism $\pi^0$. Then $\pi$ weakly improves expected social welfare over $\pi^0$:
+\[
+\bbE_{\bmv \sim \calF}\big[\SW(h(\tbmp^*, \tbms^*; \bmv); \bmv)\big] \;\ge\; \bbE_{\bmv \sim \calF}\big[\SW(h(\tbmp^{0,*}, \tbms^{0,*}; \bmv); \bmv)\big].
+\]
+\end{corollary}
+
+\begin{proof}
+Fix any terminal history $h$. Summing the utilities in \cref{eq:utility-raw} over all players,
+\[
+\SW(h;\bmv) = \sum_{i \in \calI} U_i(h;v_i) = \sum_{i \in \calI} y_i v_i \;-\; \sum_{i} y_i p_i \;+\; \sum_{i} \sum_{j \in \Desc(i)} y_j\, \pi(j,i)\, p_j.
+\]
+Swapping the order of the last double sum and using that $j \in \Desc(i) \iff i \in \Path(j)$ together with the Path Only property (\cref{def:prm}),
+\[
+\sum_{i} \sum_{j \in \Desc(i)} y_j\, \pi(j,i)\, p_j = \sum_{j} y_j p_j \sum_{i \in \Path(j)} \pi(j,i) = \sum_{j} y_j p_j,
+\]
+where the last equality holds by budget balance. This cancels $\sum_i y_i p_i$, so $\SW(h;\bmv) = \sum_{i \in \calI} y_i v_i$. This is intuitive: with budget balance, monetary transfers are internal and welfare equals the total realized valuation.
+
+Now set $h = h(\tbmp^*, \tbms^*; \bmv)$. Under the threshold equilibrium, trade $i$ occurs ($y_i = 1$) exactly when every player on the path from the root to $i$ is willing to buy, \ie, $\bmv \in \bigcap_{k \in (\Path(i) \cup \{i\}) \setminus \{r\}} E_k(\tbmp^*, \tbms^*)$. By \cref{thm:global}, $E_k(\tbmp^{0,*}, \tbms^{0,*}) \subseteq E_k(\tbmp^*, \tbms^*)$ for every $k$, so $y_i$ in $h(\tbmp^*, \tbms^*; \bmv)$ is weakly larger than $y_i$ in  $h(\tbmp^{0,*}, \tbms^{0,*}; \bmv)$. Since $v_i > 0$ with probability 1, summing over $i$ and taking the expectation over $\bmv \sim \calF$ yields the claim.
+\qed
+\end{proof}

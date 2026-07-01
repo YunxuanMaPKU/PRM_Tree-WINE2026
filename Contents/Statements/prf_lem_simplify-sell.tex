@@ -1,0 +1,51 @@
+\begin{proof}
+We construct a candidate profile $(\tbmp^\dagger, \tbmx^\dagger)$ of the claimed simplified form together with a Bayes-consistent belief system, and verify the two requirements of \cref{def:pbe}. We proceed by backward induction on the tree (leaves to root), showing that at \emph{every} information set $(h_i, v_i)$ the prescribed action maximizes player $i$'s expected utility $\bbU_i$~\eqref{eq:cond-utility} while all other players follow the profile---that is, the profile is sequentially rational. Throughout, the payoff-relevant belief is the Bayes-consistent posterior $\calF(\cdot \mid v_i)$ over $\bmv_{\Desc(i)}$ at every information set (\cref{fact:simplify}), so part~(b) of \cref{def:pbe} holds automatically and we only argue part~(a).
+
+\paragraph{Base case (leaf nodes).}
+For any leaf $i \in \calL$, player $i$ has no children, so $\Desc(i) = \varnothing$. Player $i$'s utility from \cref{eq:utility-raw} reduces to:
+\[
+U_i(h; v_i) \;=\; y_i \cdot (v_i - p_i).
+\]
+Expanding $y_i = y_{\Parent(i)} \cdot x_i$ via \cref{eq:yi}, the expected utility conditioned on history $h_i$ and action $x_i$ is:
+\[
+\bbE[U_i \mid h_i, v_i, x_i] \;=\; x_i \cdot y_{\Parent(i)} \cdot (v_i - p_i),
+\]
+where $y_{\Parent(i)} \in \{0,1\}$ and $p_i \ge 0$ are both determined by $h_i$.
+
+\emph{Case $y_{\Parent(i)} = 0$:} The utility is $0$ regardless of $x_i$, so any $x_i$ is optimal.
+
+\emph{Case $y_{\Parent(i)} = 1$:} The utility equals $x_i(v_i - p_i)$. Since $x_i \in \{0,1\}$, the unique optimum is $x_i = \one\{v_i \ge p_i\}$.
+
+In both cases, the optimal $x_i$ depends only on $(v_i, p_i)$, not on the full history $h_i$. Hence $\tx_i(h_i, v_i) = \tx^\dagger_i(v_i, p_i)$ for some function $\tx^\dagger_i$.
+
+\paragraph{Inductive step.}
+Fix a non-leaf node $i$. Assume that for all $m \in \Desc(i)$, the strategies have been simplified: $\tp^\dagger_m$ depends only on $v_m$, and $\tx^\dagger_m$ depends only on $(v_m, p_m)$.
+
+By \cref{fact:simplify} and the Markov property (\cref{asp:markov}), the posterior distribution satisfies $\calF(\bmv_{\Desc(i)} \mid v_i, h_i) = \calF(\bmv_{\Desc(i)} \mid v_i)$. Under the inductive hypothesis, the strategies of all descendants are functions of their own valuations and local prices only, so the expected utility from \cref{eq:utility-raw} expands as:
+\begin{align}
+&\bbE[U_i \mid h_i, v_i, x_i, \{p_j\}_{j \in \Children(i)}] \nonumber\\
+&= x_i \cdot y_{\Parent(i)} \cdot (v_i - p_i) + \bbE_{\bmv_{\Desc(i)} \sim \calF(\cdot|v_i)}\bigg[\sum_{m \in \Desc(i)} \pi(m,i) \cdot p_m \cdot y_m\bigg]. \label{eq:prf:simplify:expand}
+\end{align}
+For any $m \in \Desc(i)$, the trade indicator decomposes as $y_m = y_i \cdot y_{m|i} = x_i \cdot y_{\Parent(i)} \cdot y_{m|i}$, where $y_{m|i}$ (\cref{eq:y-conditional}) depends only on valuations and strategies within $\Desc(i)$. Substituting into~\eqref{eq:prf:simplify:expand} and factoring out $x_i \cdot y_{\Parent(i)}$:
+\begin{equation}
+\label{eq:prf:simplify:factor}
+\bbE[U_i \mid h_i, v_i, x_i, \{p_j\}] = x_i \cdot y_{\Parent(i)} \cdot \bigg[(v_i - p_i) + \sum_{j \in \Children(i)} G^{(j)}_i(v_i, p_j)\bigg],
+\end{equation}
+where $G^{(j)}_i(v_i, p_j)$ is defined in \cref{eq:gain-child}. Each $G^{(j)}_i(v_i, p_j)$ depends only on $v_i$ and $p_j$, since the strategies and valuations within $\Subtree(j)$ are independent of $h_i$ by the inductive hypothesis.
+
+\emph{Pricing.} The factor $x_i \cdot y_{\Parent(i)} \ge 0$ does not depend on $\{p_j\}$. Therefore, maximizing $\bbE[U_i \mid \cdot]$ over $\{p_j\}$ reduces to maximizing $G^{(j)}_i(v_i, p_j)$ independently for each $j \in \Children(i)$. Since $G^{(j)}_i(v_i, p_j)$ depends only on $v_i$ and $p_j$, the optimal price $p^*_j$ is a function of $v_i$ alone. (The maximum is attained: setting $p_j$ above $\sup \calV_j$ yields gain $0$, so the search is confined to the compact interval $[0, \sup \calV_j]$ on which $G^{(j)}_i(v_i, \cdot)$ is upper semicontinuous; for finite support it is a maximum over finitely many candidate prices, cf.\ \cref{thm:algo-exact}.) Hence $\tp_i(h_i, j, v_i) = \tp^\dagger_j(v_i)$.
+
+\emph{Buying.} After substituting the optimal prices $\{p^*_j(v_i)\}_{j \in \Children(i)}$, define:
+\[
+\Phi(v_i) \;\coloneqq\; (v_i - p_i) + \sum_{j \in \Children(i)} G^{(j)}_i\big(v_i, p^*_j(v_i)\big).
+\]
+Then $\bbE[U_i \mid \cdot] = x_i \cdot y_{\Parent(i)} \cdot \Phi(v_i)$. When $y_{\Parent(i)} = 0$, the utility is $0$ for all $x_i$. When $y_{\Parent(i)} = 1$, the optimal choice is $x_i = \one\{\Phi(v_i) \ge 0\}$, which depends only on $(v_i, p_i)$. Hence $\tx_i(h_i, v_i) = \tx^\dagger_i(v_i, p_i)$.
+
+\paragraph{From the construction to a perfect Bayesian equilibrium.}
+The backward induction defines, for every player $i$, the simplified strategies $\tp^\dagger_j$ ($j \in \Children(i)$) and $\tx^\dagger_i$. By construction, the prescribed actions maximize player $i$'s expected utility $\bbU_i\big((\tbmp^\dagger, \tbmx^\dagger), \calF(\cdot\mid v_i) \mid h_i, v_i\big)$~\eqref{eq:cond-utility} over player $i$'s own actions at \emph{every} information set $(h_i, v_i)$, while all other players follow $(\tbmp^\dagger, \tbmx^\dagger)$; in particular, this optimality holds for every offered price $p_i$ and every value of $y_{\Parent(i)}$, hence at on- and off-path information sets alike (the root and leaf cases follow from the same computation restricted to pricing or buying alone). Equivalently, for every deviation $(\tp_i, \tx_i)$,
+\[
+\bbU_i\big((\tbmp^\dagger, \tbmx^\dagger), \calF(\cdot\mid v_i) \mid h_i, v_i\big) \;\ge\; \bbU_i\big((\tp_i, \tbmp^\dagger_{-i}, \tx_i, \tbmx^\dagger_{-i}), \calF(\cdot\mid v_i) \mid h_i, v_i\big),
+\]
+which is exactly the sequential-rationality requirement~(a) of \cref{def:pbe}. Together with the Bayes-consistency of the beliefs $\calF(\cdot \mid v_i)$ (\cref{fact:simplify}), this shows that $\big((\tbmp^\dagger, \tbmx^\dagger), \mu\big)$ is a perfect Bayesian equilibrium of the simplified form~\eqref{eq:lem:simplify-sell}.
+\qed
+\end{proof}

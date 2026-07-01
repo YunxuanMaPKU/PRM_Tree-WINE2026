@@ -1,0 +1,8 @@
+\begin{proof}
+By \cref{lem:simplify-sell}, buyer $i$'s optimal action is $x_i = 1$ iff $v_i - p_i + \sum_{j \in \Children(i)} \max_{p_j} G^{(j)}_i(v_i, p_j) \ge 0$. Define:
+\[
+\ts^\dagger_i(v_i) \;\coloneqq\; v_i + \sum_{j \in \Children(i)} \max_{p_j \ge 0}\; G^{(j)}_i(v_i, p_j).
+\]
+Then $x_i = 1$ iff $\ts^\dagger_i(v_i) \ge p_i$, which is the threshold strategy in \cref{eq:threshold}. For leaf $i$: $\ts^\dagger_i(v_i) = v_i$.
+\qed
+\end{proof}

@@ -1,0 +1,89 @@
+\newpage
+\section{Omitted Proofs and Pseudocode}
+\label{sec:omitted-proofs}
+
+\subsection{Omitted Pseudocode}
+We defer to here the two subroutines referenced in \cref{sec:algo}: the forward dynamic program \textsc{ForwardDP} (\cref{alg:forward-dp}), which evaluates the gain function $G^{(j)}_i$ called by \cref{alg:exact}, and the FPTAS (\cref{alg:approx}) of \cref{thm:algo-approx}.
+
+\begin{algorithm}[H]
+\caption{ForwardDP: Compute $G^{(j)}_i(w_k, p_j)$}
+\label{alg:forward-dp}
+\KwIn{Tree $\calT$, PRM $\pi$, transition $Q$, subtree root $j$, seller $i$, valuation index $k$, price $p_j$}
+\KwOut{$G^{(j)}_i(w_k, p_j)$}
+\For{$\ell = 1, \ldots, S$}{
+  $\Pr[Y(j, \ell)] \gets q_{j,k,\ell} \cdot \one\{s^*(j, \ell) \ge p_j\}$\;
+}
+$\text{gain} \gets \pi(j, i) \cdot p_j \cdot \sum_{\ell \in [S]} \Pr[Y(j, \ell)]$\;
+\For{each $m \in \Subtree(j)$ \textup{(top-down BFS order)}}{
+  \For{each $m' \in \Children(m)$}{
+    \For{$\ell' = 1, \ldots, S$}{
+      $\Pr[Y(m', \ell')] \gets \sum_{\ell \in [S]} \Pr[Y(m, \ell)] \cdot q_{m',\ell,\ell'} \cdot \one\{s^*(m', \ell') \ge p^*(m', \ell)\}$\;
+    }
+    $\text{gain} \gets \text{gain} + \sum_{\ell \in [S]} \pi(m', i) \cdot p^*(m', \ell) \cdot \Pr[Y(m, \ell)] \cdot \sum_{\ell'} q_{m',\ell,\ell'} \cdot \one\{s^*(m', \ell') \ge p^*(m', \ell)\}$\;
+  }
+}
+\textbf{return} gain\;
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{FPTAS for $\varepsilon$-Approximate Equilibrium}
+\label{alg:approx}
+\KwIn{$\varepsilon > 0$, tree $\calT$, PRM $\pi$, conditional CDFs $\{F_i\}$, support $[L_0, H_0]$, Lipschitz constant $K_0$}
+\KwOut{$\varepsilon$-approximate equilibrium $(\tbmp^*, \tbms^*)$}
+$R \gets \max(|L_0|, |H_0|)$\;
+$\varepsilon_0 \gets \frac{\min(\varepsilon, 1)}{8(1 + NK_0)(1 + R)}$\;
+$S \gets \lfloor (H_0 - L_0)/\varepsilon_0 \rfloor + 1$\;
+$W \gets \{L_0 + \ell \cdot \varepsilon_0\}_{\ell = 0}^{S-1}$\;
+\For{each $i \in \calI \setminus \{r\}$, $k, \ell \in \{0, \ldots, S-1\}$}{
+  $q_{i,k,\ell} \gets F_i(w_{\ell+1} \mid w_k) - F_i(w_\ell \mid w_k)$\;
+}
+$\{s^*(i,k)\}, \{p^*(j,k)\} \gets \text{\cref{alg:exact}}(\calT, \pi, Q, W)$\;
+\For{each $i \in \calI \setminus \{r\}$}{
+  $\ts^*_i(v_i) \gets s^*(i, \lfloor (v_i - L_0)/\varepsilon_0 \rfloor)$\;
+  $\tp^*_j(v_i) \gets p^*(j, \lfloor (v_i - L_0)/\varepsilon_0 \rfloor)$ for each $j \in \Children(i)$\;
+}
+\textbf{return} $(\tbmp^*, \tbms^*)$\;
+\end{algorithm}
+
+\subsection{Proof of \texorpdfstring{\cref{fact:simplify}}{Fact~\ref{fact:simplify}}: Posterior Simplification}
+\input{Contents/Statements/prf_fact_simplify}
+
+
+\subsection{Proof of \texorpdfstring{\cref{lem:simplify-sell}}{Lemma~\ref{lem:simplify-sell}}: Equilibrium Simplification}
+\lemSimplifySell*
+\input{Contents/Statements/prf_lem_simplify-sell}
+
+
+\subsection{Proof of \texorpdfstring{\cref{cor:simplify-buy}}{Corollary~\ref{cor:simplify-buy}}: Threshold Strategy}
+\corSimplifyBuy*
+\input{Contents/Statements/prf_cor_simplify-buy}
+
+
+\subsection{Proof of \texorpdfstring{\cref{lem:subtree-decomp}}{Lemma~\ref{lem:subtree-decomp}}: Subtree Decomposition}
+\lemSubtreeDecomp*
+\input{Contents/Statements/prf_lem_subtree-decomp}
+
+
+\subsection{Proof of \texorpdfstring{\cref{thm:algo-exact}}{Theorem~\ref{thm:algo-exact}}: Polynomial Algorithm}
+\thmAlgoExact*
+\input{Contents/Statements/prf_thm_algo-exact}
+
+
+\subsection{Proof of \texorpdfstring{\cref{thm:algo-approx}}{Theorem~\ref{thm:algo-approx}}: FPTAS}
+\thmAlgoApprox*
+\input{Contents/Statements/prf_thm_algo-approx}
+
+
+\subsection{Homogeneity Scaling Lemma}
+\begin{lemma}[Homogeneity Scaling]
+\label{lem:scaling}
+Let \cref{asp:markov,asp:posi,asp:homo} hold and let $(\tbmp^*, \tbms^*)$ be the simplified equilibrium under a PRM $\pi$ with the smallest-maximizer tie-break.
+\emph{(1) Linearity:} for every $i \in \calI \setminus \{r\}$ there is a constant $\hat{s}_i \ge 1$ with $\ts^*_i(v) = \hat{s}_i\, v$ for all $v > 0$, and for every $j \in \calI \setminus \{r\}$ a constant $\hat{p}_j \ge 0$ with $\tp^*_j(v) = \hat{p}_j\, v$ for all $v > 0$.
+\emph{(2) Mechanism-independent trade events:} if the seller $i = \Parent(j)$ collects from $\Subtree(j)$ only the one-shot payment of trade $j$---\ie, $\pi(m,i) = 0$ for all $m \in \Desc(j)$---then $E_j(\tbmp^*, \tbms^*) = \{\bmv : v_j / v_{\Parent(j)} \ge \tau_j\}$, where the threshold $\tau_j$ depends only on the conditional law $F_j$, not on $\pi$.
+\end{lemma}
+\input{Contents/Statements/prf_lem_scaling}
+
+
+\subsection{Proof of \texorpdfstring{\cref{thm:partial}}{Theorem~\ref{thm:partial}}: Local Comparison}
+\thmPartial*
+\input{Contents/Statements/prf_thm_partial}

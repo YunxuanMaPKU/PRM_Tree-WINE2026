@@ -1,0 +1,170 @@
+\section{Model}
+\label{sec:model}
+
+\subsection{Tree-Based Data Trading Game}
+\label{subsec:game}
+
+We consider a data trading game on a rooted tree $\calT$ that generalizes the chain-based formulation of \citet{ma2026incentivizing}.
+The node set $\calI$ is the set of all players, with each directed edge pointing from a parent to a child. Let $r \in \calI$ denote the root, and $\calL \subseteq \calI$ denote the set of leaf nodes. We write $N \coloneqq |\calI|$ for the total number of players. We define the following for players:
+\begin{itemize}[left=0em]
+\item $\Parent(i)$, for $i \in \calI \setminus \{r\}$: the unique parent of $i$ in $\calT$.
+\item $\Children(i)$, for $i \in \calI$: the set of children of $i$. For leaf nodes $i \in \calL$, $\Children(i) = \varnothing$.
+\item $\Path(i)$, for $i \in \calI$: the set of strict ancestors of $i$, \ie, the nodes on the path from $r$ to $i$ excluding $i$. We have $\Path(r) = \varnothing$.
+\item $\Subtree(i)$, for $i \in \calI$: all nodes in the subtree rooted at $i$, including $i$ itself.
+\item $\Desc(i) \coloneqq \Subtree(i) \setminus \{i\}$, for $i \in \calI$: the set of strict descendants of $i$.
+\end{itemize}
+\cref{fig:tree-notation} illustrates these notations on a small instance.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.66\textwidth]{Materials/example-tree.pdf}
+\caption{An illustration of the tree notation on a $7$-player instance. The root $r$ is shown in blue and the leaves $\calL = \{uu, l, ulu, ull\}$ in green. Taking node $ul$ as the reference: its parent is $\Parent(ul) = u$, its children are $\Children(ul) = \{ulu, ull\}$, and its strict ancestors are $\Path(ul) = \{r, u\}$. The red dashed box marks $\Subtree(ul) = \{ul, ulu, ull\}$, so that $\Desc(ul) = \{ulu, ull\}$. Best viewed in color.}
+\label{fig:tree-notation}
+\end{figure}
+
+Replicable data flow downward along the edges of $\calT$, originating at the root $r$. Once a non-root player $i$ receives data from its parent, it refines the data into a sellable product that it may, in turn, offer to each of its children. Player $i$'s \emph{valuation} is a single scalar $v_i \in \calV_i \subseteq \bbR$: the net worth of the data product to $i$, namely the benefit it derives minus the processing cost, which may be negative. This quantity is observed only by player $i$.
+We write $\bmv =\{v_i\}_{i \in \calI}$ as valuation profile, $\calV \coloneqq \prod_{i \in \calI} \calV_i$ for the space of valuation profiles, $\bmv_{-i}$ for the valuation profile other than player $i$'s, and $\calV_{-i} \coloneqq \prod_{k \neq i} \calV_k$ for its domain.
+Following \citet{ma2026incentivizing}, we let the valuation profile evolve as a Markov process down the tree.
+%  to the tree, and because a refined product inherits its quality from the input it was built upon, we let valuations evolve as a Markov process down the tree.
+
+\begin{assumption}[Markovian on Trees]
+\label{asp:markov}
+The root valuation is drawn as $v_r \sim f_r(\cdot)$. For every non-root player $i \in \calI \setminus \{r\}$, the valuation $v_i$ depends only on $v_{\Parent(i)}$:
+\[
+v_i \sim f_i(\cdot \mid v_{\Parent(i)}).
+\]
+The valuation profile $\bmv = \{v_i\}_{i \in \calI}$ has the joint distribution $f(\bmv) = f_r(v_r) \prod_{i\ne r} f_i(v_i|v_{\Parent(i)})$.
+We denote the joint distribution of $\bmv$ by $\calF$, and the conditional CDF by $F_i$. Both $\calF$, $F_i$s and $f_i$s are common knowledge.
+\end{assumption}
+
+This assumption fits the tree structure: a player $i$'s product's worth is governed by the immediate input (player $\Parent(i)$'s product) from which it is refined, rather than by the raw material that forms the immediate input. It also subsumes the classical independent-private-values setting~\citep{myerson1981optimal} as a special case.
+
+
+\subsection{Player Action}
+\label{subsec:action}
+
+Each edge $(i,j)$ with $j \in \Children(i)$ is a potential trade. The seller $i$ first commits to a posted price $p_j \in \bbR_+$ for child $j$; seeing this price, player $j$ responds with a binary decision $x_j \in \{0,1\}$, describing her willingness to buy ($x_j = 1$) or not ($x_j = 0$).
+
+A trade $i$ actually occurs if and only if trade $\Parent(i)$ occurs and player $i$ is willing to buy the data from player $\Parent(i)$. We define the indicator of whether trade $i$ occurs:
+\begin{equation}
+\label{eq:yi}
+y_i \;\coloneqq\; \prod_{j \in \Path(i) \cup \{i\}} x_j,
+\end{equation}
+where we set $x_r \coloneqq 1$ and $p_r \coloneqq 0$ by convention (the root player initially possesses the data).
+If $y_i = 1$, trade $i$ occurs, player $i$ obtains the data, realizes valuation $v_i$, and pays $p_i$; otherwise $y_i = 0$, player $i$ gains nothing and pays nothing. For $m \in \Desc(j)$, we define the \emph{conditional trade indicator}:
+\begin{equation}
+\label{eq:y-conditional}
+y_{m \mid j} \;\coloneqq\; \prod_{\substack{\ell \in \Path(m) \cup \{m\} \\ \ell \notin \Path(j) \cup \{j\}}} x_\ell,
+\end{equation}
+which is the product of trade decisions along the path from $j$ to $m$, excluding $j$. This captures whether trade $m$ occurs conditional on trade $j$ occurs.
+
+
+\subsection{Player Strategy}
+\label{subsec:strategy}
+
+At each stage, a player observes the trading history along their path from the root. For player $i$, the observed history is:
+\begin{equation}
+\label{eq:hi}
+h_i = \big\{(j, p_j, x_j)\big\}_{j \in \Path(i) \setminus \{r\}} \cup \{(i, p_i)\},
+\end{equation}
+which includes all past trade outcomes on the path from $r$ to $i$ and the price $p_i$ currently offered to $i$. We set $h_r = \varnothing$. Let $\calH_i$ denote the set of all possible histories for player $i$.
+
+A strategy for player $i$ consists of:
+\begin{itemize}[left=0em]
+\item \textbf{Pricing strategy} (for $i \notin \calL$): $\tp_i: \calH_i \times \Children(i) \times \calV_i \to \bbR_+$, where $\tp_i(h_i, j, v_i)$ is the price player $i$ offers to child $j$.
+\item \textbf{Buying strategy} (for $i \neq r$): $\tx_i: \calH_i \times \calV_i \to \{0, 1\}$, where $\tx_i(h_i, v_i)$ is the player $i$'s willingness to buy given public history and her private valuation $v_i$.
+\end{itemize}
+We call $(\tbmp, \tbmx) = \big(\{\tp_i\}_{i \notin \calL},\; \{\tx_i\}_{i \neq r}\big)$ a strategy profile.
+
+
+\subsection{Game Dynamic}
+\label{subsec:dynamic}
+
+\begin{definition}[Game Dynamics on Trees]
+\label{def:game-evolve}
+Given a valuation profile $\bmv$ and a strategy profile $(\tbmp, \tbmx)$, the game evolves recursively from root to leaves:\\
+1. Initialize $h_r = \varnothing$.\\
+2. For each non-leaf player $i$ and each child $j \in \Children(i)$, the seller posts price $p_j = \tp_i(h_i, j, v_i)$.\\
+3. Each non-root player $i$ decides $x_i = \tx_i(h_i, v_i)$.\\
+4. The game concludes with the terminal history $h = \{(i, p_i, x_i)\}_{i \in \calI \setminus \{r\}}$.
+\end{definition}
+
+We denote this mapping from valuation profile $\bmv$, strategy profile $(\tbmp, \tbmx)$ to the terminal history $h$ as $h(\tbmp, \tbmx;\bmv)$.
+
+
+\subsection{Profit Reallocation Mechanism}
+\label{subsec:mechanism}
+
+A \emph{profit reallocation mechanism} (PRM) specifies how the payment from each trade is distributed among upstream players.
+
+\begin{definition}[Profit Reallocation Mechanism on Trees]
+\label{def:prm}
+A PRM is a function $\pi: (\calI \setminus \{r\}) \times (\calI \setminus \calL) \to \bbR_+$, where $\pi(i,j)$ is the proportion of the payment from trade $i$ allocated to player $j$. That is, when trade $i$ occurs at price $p_i$, player $j$ receives the monetary transfer of $\pi(i,j) \cdot p_i$. The function $\pi$ must satisfy following constraints to make it economically meaningful:
+\begin{enumerate}[left=0em]
+\item \textbf{Path Only:} $\pi(i,j) > 0$ only if $j \in \Path(i)$. Only ancestors of buyer $i$ are eligible for profit reallocation.
+\item \textbf{Budget Feasibility:} $\sum_{j \in \calI \setminus \calL} \pi(i,j) \le 1$ for all $i \in \calI \setminus \{r\}$. The revenue of ancestors can not exceed the payment from the buyer in any trade.
+\end{enumerate}
+\end{definition}
+
+The PRM-aware model is specified by $\Model = (\calT, \pi, \calF)$.
+A distinguished PRM is the \emph{baseline mechanism}, which does not perform profit reallocation:
+
+\begin{definition}[Baseline Mechanism]
+\label{def:baseline}
+The \emph{baseline mechanism} $\pi^0$ allocates the entire payment to the direct seller: $\pi^0(i, \Parent(i)) = 1$ and $\pi^0(i, j) = 0$ for $j \neq \Parent(i)$.
+\end{definition}
+
+
+\subsection{Utility and Solution Concept}
+\label{subsec:solution}
+
+Given a PRM $\pi$ and terminal history $h$, the realized utility of player $i$ is:
+\begin{equation}
+\label{eq:utility-raw}
+U_i(h; v_i) = y_i \cdot (v_i - p_i) + \sum_{j \in \Desc(i)} y_j \cdot \pi(j,i) \cdot p_j.
+\end{equation}
+The first term is player $i$'s own surplus from trade $i$; the second term aggregates the profit reallocation routed to $i$ from descendant trades, which by the Path Only condition (\cref{def:prm}) arrive only from $\Desc(i)$. We also denote social welfare as the aggregate utility $\SW(h;\bmv) = \sum_{i \in \calI} U_i(h;v_i)$.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.9\textwidth]{Materials/example-game.pdf}
+\caption{A running example of the tree-based data trading game. Best viewed in color.}
+\label{fig:example}
+\end{figure*}
+
+\begin{example}
+\label{ex:running}
+\cref{fig:example} shows an instance with $N = 7$ players; the valuations, the PRM $\pi$, and all actions are given there, and the realized utilities follow from \cref{eq:utility-raw}. Two effects are worth highlighting. First, player $u$ has a \emph{negative} value $v_u = -1$, so its direct trade loses $v_u - p_u = -2$; yet the reallocated profit $\pi(uu,u)\,p_{uu} = 2.5$ from the successful downstream trade $uu$ leaves it with $U_u = 0.5$---so it's sometimes rational to buy the data even if the valuation is negative. Second, trade $lu$ fails despite $x_{lu}=1$, because the upstream trade $l$ fails ($x_l=0$), so $l, lu, ll$ all earn zero.
+\end{example}
+
+Under the strategy profile $(\tbmp, \tbmx)$, the expected utility of player $i$ is:
+\begin{equation}
+\label{eq:expected-utility}
+u_i(\tbmp, \tbmx) \;\coloneqq\; \bbE_{\bmv \sim \calF}\!\big[U_i(h(\tbmp, \tbmx; \bmv); v_i)\big],
+\end{equation}
+where $h(\tbmp, \tbmx; \bmv)$ is the terminal history generated by $(\tbmp, \tbmx)$ and $\bmv$ according to game dynamic (\cref{def:game-evolve}).
+
+How would strategic players behave under a given PRM? As the game is sequential and players hold private information, we adopt \emph{perfect Bayesian equilibrium} (PBE)~\citep{fudenberg1991game,MWG}---the standard refinement of Nash equilibrium for such games---as our solution concept: each player must act optimally at \emph{every} information set she may reach, under a belief about the others' valuations that is updated by Bayes' rule.
+
+Player $i$'s \emph{information set} is the pair $(h_i, v_i)$ of her observed history and private valuation. A \emph{belief system} $\mu = \{\mu_i\}_{i \in \calI}$ specifies, at each information set, a distribution $\mu_i(\cdot \mid h_i, v_i) \in \Delta(\calV_{-i})$ over the other players' valuations $\bmv_{-i}$, where $\Delta(\calV_{-i})$ is the set of probability distributions on $\calV_{-i}$; this is player $i$'s posterior about $\bmv_{-i}$ upon observing $(h_i, v_i)$. Given a strategy profile $(\tbmp, \tbmx)$ and the belief $\mu_i$, player $i$'s conditional expected utility at $(h_i, v_i)$ is
+\begin{equation}
+\label{eq:cond-utility}
+\bbU_i\big((\tbmp, \tbmx), \mu_i \mid h_i, v_i\big) \;\coloneqq\; \bbE_{\bmv_{-i} \sim \mu_i(\cdot \mid h_i, v_i)}\!\big[\, U_i\big(h(\tbmp, \tbmx;\, (v_i, \bmv_{-i})); v_i\big)\big],
+\end{equation}
+where $U_i$ is the realized utility~\eqref{eq:utility-raw} and $h(\cdot\,; \bmv)$ the terminal history generated by the game dynamics (\cref{def:game-evolve}).
+
+\myx{TBA: check later.}
+
+\begin{definition}[Perfect Bayesian Equilibrium~\citep{fudenberg1991game,MWG}]
+\label{def:pbe}
+An assessment $\big((\tbmp^*, \tbmx^*), \tbmmu\big)$ of a strategy profile and a belief system is a \emph{perfect Bayesian equilibrium} if both of the following hold.
+\begin{enumerate}[label=(\alph*),left=0em]
+\item \textup{(Sequential rationality)} For every player $i \in \calI$, every information set $(h_i, v_i)$, and every deviation $(\tp_i, \tx_i)$ in player $i$'s own strategy components ($\tp_i$ only for the root, $\tx_i$ only for a leaf, both otherwise),
+\[
+\bbU_i\big((\tbmp^*, \tbmx^*), \tmu_i \mid h_i, v_i\big) \;\ge\; \bbU_i\big((\tp_i, \tbmp^*_{-i}, \tx_i, \tbmx^*_{-i}), \tmu_i \mid h_i, v_i\big).
+\]
+\item \textup{(Bayes-consistency)} At every information set $(h_i, v_i)$ reached with positive probability under $(\tbmp^*, \tbmx^*)$, the belief $\tmu_i(\cdot \mid h_i, v_i)$ equals the conditional distribution of $\bmv_{-i}$ induced by the prior $\calF$ and the profile $(\tbmp^*, \tbmx^*)$ given $(h_i, v_i)$.
+\end{enumerate}
+\end{definition}
+
+% The Markovian structure makes them especially clean: by \cref{fact:simplify} below, the only component of $\mu_i$ that affects player $i$'s utility---the law of the descendant valuations $\bmv_{\Desc(i)}$ entering $U_i$ in~\eqref{eq:utility-raw}---equals $\calF(\cdot \mid v_i)$ at \emph{every} information set, on or off path. The payoff-relevant beliefs are thus pinned down everywhere, leaving none of the off-path latitude that ordinarily makes weak PBE permissive.\footnote{The Kreps--Wilson sequential-equilibrium refinement~\citep{kreps1982sequential} targets exactly this latitude, but is formulated for finite games; with continuous prices and valuations we do not invoke it, though the uniqueness just noted is the robustness it enforces.} To exhibit a PBE it therefore suffices to find a profile under which, at each $(h_i, v_i)$, player $i$'s prescribed action maximizes $\bbU_i$ with $\bmv_{\Desc(i)} \sim \calF(\cdot \mid v_i)$---exactly what the backward induction of \cref{sec:algo} establishes.
