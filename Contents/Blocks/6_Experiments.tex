@@ -8,14 +8,14 @@ We complement the theory with exact computational experiments addressing four qu
 Our valuation models, mechanisms, and metrics follow the chain study of \citet{ma2026incentivizing} for comparability. We consider two families of topologies. The first is \emph{complete $m$-ary trees} of depth $d$: the root originates the data and every non-leaf player has $m$ children, giving levels $0,\ldots,d$. By the level-symmetry of the tree under a Markovian valuation process, all players on the same level share the same equilibrium strategy, so it suffices to compute $d+1$ representative strategies; the case $m=1$ recovers the chain of length $d$ studied in \citet{ma2026incentivizing}. The second is the \emph{irregular} tree of \cref{fig:tree-notation}: a $7$-player instance with root $r$ and children $u,l$, where $l$ is a leaf, $u$ has children $uu$ (a leaf) and $ul$, and $ul$ has two leaf children $ulu,ull$---so branching and depth vary across nodes (depths range from $1$ to $3$). Lacking level-symmetry, it is solved without any symmetry reduction. All equilibria are computed exactly with \cref{alg:exact}.
 
 \paragraph{Valuation models.}
-Each child's valuation follows a local random walk on the grid: from a parent at index $k$, the child lands on one of $k-2,\dots,k+2$ with equal probability (clipped into $[0,2d]$ for M2). The four models share this transition and differ only in how indices map to values, spanning the four assumption regimes:
+Each child's valuation follows a local random walk on the grid: from a parent $i$ with value $v_i = w_k$, each child $j$ generates $k'$ independently in one of $k-2,\dots,k+2$ with equal probability (clipped into $[0,2d]$ for M2) and set $v_j = w_{k'}$. The four models share this transition and differ only in the values of $\{w_k\}$s. Specifically:
 \begin{itemize}[left=0em]\itemsep0.1em
 \item \textbf{M1} (homogeneous, positive): $w_k = e^{(k-2d)/2}$, $k=0,\ldots,4d$, root $v_r = w_{2d} = 1$; satisfies both \cref{asp:homo,asp:posi}.
 \item \textbf{M2} (non-homogeneous, positive): $w_k = k/2d$, $k=0,\ldots,2d$, root $v_r = w_0 = 0$; violates homogeneity.
 \item \textbf{M3} (homogeneous, non-positive): $w_k = (-1)^k e^{(k-2d)/2}$, $k=0,\ldots,4d$, root $v_r = w_{2d} = 1$; violates positivity.
 \item \textbf{M4} (non-homogeneous, non-positive): $w_k = (k-2d)/2d$, $k=0,\ldots,4d$, root $v_r = w_{2d} = 0$; violates both.
 \end{itemize}
-Only M1 is covered by our theory, while M2--M4 test robustness.
+% Only M1 is covered by our theory, while M2--M4 test robustness.
 
 \paragraph{Mechanisms.}
 We compare four budget-balanced PRMs. For a trade $m$ with ancestors $\Path(m)$, writing $\ell_m \coloneqq |\Path(m)|$ and, for $k \in \Path(m)$, $s(m,k) \coloneqq \mathrm{depth}(\Parent(m)) - \mathrm{depth}(k) \in \{0,\ldots,\ell_m-1\}$ for the number of steps from the direct seller $\Parent(m)$ up to $k$:
@@ -23,8 +23,11 @@ We compare four budget-balanced PRMs. For a trade $m$ with ancestors $\Path(m)$,
 \item \textbf{RAW} (baseline, \cref{def:baseline}): the direct seller keeps everything, $\pi(m,\Parent(m)) = 1$ and $\pi(m,k) = 0$ for $k \neq \Parent(m)$.
 \item \textbf{TBDS}~\citep{xin2025tbds}: a fixed-ratio rule with $\alpha = 0.5$ that shares a trade's payment geometrically up the ancestors---$\pi(m,k) = (1-\alpha)\,\alpha^{\,s(m,k)}$ for $k \neq r$, with the root absorbing the remainder $\pi(m,r) = \alpha^{\,\ell_m-1}$; a special case of our family used as an external baseline.
 \item \textbf{AVE}: each trade's payment is split uniformly among its ancestors, $\pi(m,k) = 1/\ell_m$ for every $k \in \Path(m)$.
-\item \textbf{OPT}: a budget-balanced PRM empirically optimized by a zeroth-order optimizer maximizing equilibrium social welfare.
+\item \textbf{OPT}: a budget-balanced PRM found by a zeroth-order optimizer maximizing equilibrium welfare, run separately for each model.
 \end{itemize}
+
+Note that RAW, TBDS, and AVE are model-independent PRMs, while OPT relies on the underlying distribution $\calF$.
+
 
 \paragraph{Metrics.}
 We report two equilibrium quantities: \emph{social welfare} $\SW=\sum_{i\in\calI}u_i(\tbmp^*,\tbmx^*)$ and \emph{transaction volume} $\mathrm{TV}=\sum_{i\in\calI\setminus\{r\}}\Pr[y_i=1]$, the expected number of completed trades. Both are evaluated \emph{exactly} by the forward dynamic program, so every reported value is exact.
@@ -34,12 +37,16 @@ We report two equilibrium quantities: \emph{social welfare} $\SW=\sum_{i\in\calI
 \input{Contents/Floats/tab_exp}
 
 \paragraph{Welfare and trade improvements (a, b).}
-\cref{tab:exp} reports both metrics for a representative configuration ($d=5$, $m=2$). Every reallocation mechanism improves over RAW across all four models, including those violating \cref{asp:homo,asp:posi}. Averaged over the four models, OPT raises transaction volume and welfare by $1077\%$ and $225\%$ over RAW, AVE by $289\%$ and $112\%$, and TBDS by $189\%$ and $67\%$. These margins are large because the baseline market nearly collapses on deep, branching trees---upstream sellers capture none of the downstream value and price most buyers out---whereas reallocation revives trade throughout.
+\cref{tab:exp} reports both metrics for a representative configuration ($d=5$, $m=2$). Every PRM improves over RAW across all four models, including those violating \cref{asp:homo,asp:posi}. Averaged over the four models, the model-independent AVE and TBDS already yield large gains over RAW---$289\%/112\%$ and $189\%/67\%$ in transaction volume/welfare.
+The results suggest that PRMs remain effective across diverse scenarios, even when \cref{asp:homo,asp:posi} no longer hold.
+%  As AVE and TBDS are fixed closed-form rules needing no per-market tuning, we regard them as the deployable mechanisms and OPT as the welfare ceiling of the design space.
+
+% These margins are large because the baseline market nearly collapses on deep, branching trees---upstream sellers capture none of the downstream value and price most buyers out---whereas reallocation revives trade throughout.
 
 \input{Contents/Floats/fig_exp_vary}
 
 \paragraph{Scaling with depth and branching (c).}
-Sweeping $d$ from $2$ to $8$ for each $m\in\{1,2,3\}$ (\cref{fig:exp-vary}), the advantage of reallocation over RAW generally grows with both depth $d$ and branching $m$---deeper, bushier trees create more downstream value to internalize---and is robust to violations of positivity (M3), shrinking but persisting when homogeneity fails (M2, M4). The growth with the branching factor $m$ is a tree-specific phenomenon with no counterpart in the chain model of \citet{ma2026incentivizing}, which our formulation is the first to exhibit.
+Varying $2 \le d\le 8$ and $m\in\{1,2,3\}$ with results shown in \cref{fig:exp-vary}, the advantage of PRMs over RAW generally grows with both depth $d$ and branching $m$---deeper, bushier trees create more downstream value to internalize---and is robust to violations of positivity and homogeneity. The growth with branching $m$ is a tree-specific phenomenon absent from the chain model \citep{ma2026incentivizing}, which our formulation is the first to exhibit.
 
 \paragraph{Irregular trees (d).}
 We report the results of the \emph{irregular} tree in \cref{fig:tree-notation}, shown in \cref{tab:exp-irregular}, \cref{sec:app-experiments}. The picture is unchanged---PRMs beat RAW for every model, indicating that the benefit of PRMs is not specific to symmetric trees.

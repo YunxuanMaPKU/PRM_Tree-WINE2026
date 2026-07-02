@@ -101,10 +101,17 @@ Under \cref{asp:finite}, strategies have finite representations: $p^*(i,k) \colo
 Let \cref{asp:markov,asp:finite} hold. Given the model $(\calT, \pi, Q)$, there exists an algorithm (\cref{alg:exact}) that computes an exact perfect Bayesian equilibrium in $O\big(N d\, S^4\big)$ time, where $S = |W|$ is the support size and $d \coloneqq \max_{i \in \calI} |\Path(i)|$ is the depth of $\calT$.
 \end{restatable}
 
-\myx{TBA: (optional) add proof sketch; result comparison, indication}
-% The proof is in \cref{sec:omitted-proofs}. The algorithm (\cref{alg:exact}) processes the tree bottom-up: for each non-leaf $i$ and valuation $w_k$ it enumerates candidate prices per child $j$ and evaluates the gain via a forward dynamic program (\cref{alg:forward-dp}) that propagates trade probabilities through $\Subtree(j)$.
-% The bound $O(Nd\,S^4)$ refines the worst case $O(N^2 S^4)$: the instance-dependent cost is $\big(\sum_{j \neq r}|\Subtree(j)|\big) S^4 = \big(\sum_{m} \mathrm{depth}(m)\big) S^4 \le N d\, S^4$, so on a balanced tree ($d = O(\log N)$) it is only $O(N \log N \cdot S^4)$---faster than a chain of the same size, for which $d = \Theta(N)$.
-% The upshot is practical: the equilibrium induced by \emph{any} PRM, and hence its social welfare and transaction volume, can be computed efficiently, making the entire design space tractable to evaluate.
+\noindent\emph{Proof Sketch.}
+\cref{alg:exact} computes the simplified equilibrium by backward induction over the tree, from the leaves to the root. Suppose the thresholds and prices of every node in $\Subtree(j)$ are already known for each child $j$ of a node $i$. By the subtree decomposition (\cref{lem:subtree-decomp}), player $i$'s problem separates across children, so its price to child $j$ maximizes the per-child gain $G^{(j)}_i(w_k,\cdot)$ independently. We further observe that the optimal price need only be searched over the finite candidate set $\{s^*(j,\ell):\ell\in[S]\}$ of buyer thresholds: between two consecutive thresholds the set of accepting buyers is fixed while raising the price weakly increases revenue, so an optimum can be attained at some threshold. Hence $i$'s strategy follows once $G^{(j)}_i(w_k,p)$ is evaluated for the $O(S)$ candidate prices and $O(S)$ valuations.
+
+The core difficulty is evaluating $G^{(j)}_i(w_k,p)$: by~\eqref{eq:gain-child} it is an expectation of reallocated payments over the \emph{entire} profile $\bmv_{\Subtree(j)}$, and summing naively over all profiles is exponential in $|\Subtree(j)|$. We overcome this with a forward dynamic program (\cref{alg:forward-dp}) that decomposes the expectation into a weighted sum of the $O(|\Subtree(j)|\,S)$ elementary events $Y(m,\ell) = \{v_m = w_\ell \text{ and every player from } j \text{ down to } m \text{ is willing to buy}\}$, whose probabilities propagate top-down through $\Subtree(j)$ via the Markov transition $Q$ in $O(|\Subtree(j)|\,S^2)$ time. Repeating over the $O(S)$ valuations and $O(S)$ candidate prices of $i$ gives $O(|\Subtree(j)|\,S^4)$ per child; summing over all edges and using $\sum_{j\neq r}|\Subtree(j)| = \sum_m \mathrm{depth}(m) \le Nd$ yields the $O(Nd\,S^4)$ bound.\qed
+
+
+This improves the $O(N^2 S^4)$ time complexity of the algorithm for chain-based model in \citet{ma2026incentivizing} since $d\le N$ always hold. \cref{alg:exact} makes any PRM evaluable and any PRMs pair comparable by computing and evaluating the exact equilibria under PRMs in polynomial time.
+\cref{alg:exact} is used for empirical evaluation in \cref{sec:exp}.
+
+
+% : its induced equilibrium---and hence its social welfare and transaction volume---is computable in polynomial time, so two PRMs can be \emph{compared} by simply running the algorithm under each. This tractable evaluation is what enables the empirical search over mechanisms in \cref{sec:exp}.
 
 \begin{algorithm}[t]
 \caption{Exact Perfect Bayesian Equilibrium on Trees}

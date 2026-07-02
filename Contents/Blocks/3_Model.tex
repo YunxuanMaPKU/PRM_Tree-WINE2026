@@ -23,7 +23,7 @@ The node set $\calI$ is the set of all players, with each directed edge pointing
 \end{figure}
 
 Replicable data flow downward along the edges of $\calT$, originating at the root $r$. Once a non-root player $i$ receives data from its parent, it refines the data into a sellable product that it may, in turn, offer to each of its children. Player $i$'s \emph{valuation} is a single scalar $v_i \in \calV_i \subseteq \bbR$: the net worth of the data product to $i$, namely the benefit it derives minus the processing cost, which may be negative. This quantity is observed only by player $i$.
-We write $\bmv =\{v_i\}_{i \in \calI}$ as valuation profile, $\calV \coloneqq \prod_{i \in \calI} \calV_i$ for the space of valuation profiles, $\bmv_{-i}$ for the valuation profile other than player $i$'s, and $\calV_{-i} \coloneqq \prod_{k \neq i} \calV_k$ for its domain.
+We write $\bmv =\{v_i\}_{i \in \calI}$ as valuation profile, $\calV \coloneqq \prod_{i \in \calI} \calV_i$ for the space of valuation profiles, $\bmv_{-i}$ for the valuation profile other than player $i$'s, and $\calV_{-i} \coloneqq \prod_{k \neq i} \calV_k$ for its domain. We assume each $\calV_i$ is a closed bounded interval.
 Following \citet{ma2026incentivizing}, we let the valuation profile evolve as a Markov process down the tree.
 %  to the tree, and because a refined product inherits its quality from the input it was built upon, we let valuations evolve as a Markov process down the tree.
 
@@ -102,7 +102,7 @@ A \emph{profit reallocation mechanism} (PRM) specifies how the payment from each
 A PRM is a function $\pi: (\calI \setminus \{r\}) \times (\calI \setminus \calL) \to \bbR_+$, where $\pi(i,j)$ is the proportion of the payment from trade $i$ allocated to player $j$. That is, when trade $i$ occurs at price $p_i$, player $j$ receives the monetary transfer of $\pi(i,j) \cdot p_i$. The function $\pi$ must satisfy following constraints to make it economically meaningful:
 \begin{enumerate}[left=0em]
 \item \textbf{Path Only:} $\pi(i,j) > 0$ only if $j \in \Path(i)$. Only ancestors of buyer $i$ are eligible for profit reallocation.
-\item \textbf{Budget Feasibility:} $\sum_{j \in \calI \setminus \calL} \pi(i,j) \le 1$ for all $i \in \calI \setminus \{r\}$. The revenue of ancestors can not exceed the payment from the buyer in any trade.
+\item \textbf{Budget Feasibility:} $\sum_{j \in \Path(i)} \pi(i,j) \le 1$ for all $i \in \calI \setminus \{r\}$. The revenue of ancestors cannot exceed the payment from the buyer in any trade.
 \end{enumerate}
 \end{definition}
 

@@ -1,4 +1,4 @@
-\section{Equilibrium Comparison between Profit Reallocation Mechanisms}
+\section{Equilibrium Comparison between PRMs}
 \label{sec:theoretic}
 
 This section establishes that profit reallocation mechanisms on trees expand equilibrium trade events compared with the baseline mechanism. As there may be multiple equilibria, we fix the simplified perfect Bayesian equilibrium $(\tbmp^*, \tbms^*)$ satisfying~\eqref{SE:transform}, constructed by the backward induction of \cref{lem:simplify-sell,cor:simplify-buy}.
@@ -21,7 +21,7 @@ Given a simplified strategy profile $(\tbmp, \tbms)$, we define the \emph{trade 
 \label{eq:trade-event}
 E_j(\tbmp, \tbms) \;\coloneqq\; \big\{\bmv \in \calV : \ts_j(v_j) \ge \tp_j(v_{\Parent(j)})\big\},
 \end{equation}
-\ie, the set of valuation profiles under which player $j$ is willing to buy at the price its parent offers.
+\ie, the set of valuation profiles under which player $j$ is willing to buy at the price her parent offers.
 %  (the first-stage condition for trade $j$, independent of whether upstream trades succeed). Whenever a mechanism $\pi^k$ admits the equilibrium $(\tbmp^{k,*}, \tbms^{k,*})$, its trade event is $E_j(\tbmp^{k,*}, \tbms^{k,*})$.
 
 % Homogeneity endows the equilibrium with a scaling structure that is the workhorse of our comparisons: equilibrium strategies are linear in valuations, and any trade whose seller collects only a one-shot payment has a mechanism-independent threshold (the \emph{homogeneity scaling lemma}, \cref{lem:scaling} in \cref{sec:omitted-proofs}).
@@ -53,9 +53,18 @@ Let $\calF$ satisfy \cref{asp:markov,asp:posi,asp:homo}. Let $\pi^1, \pi^2$ be t
 \end{enumerate}
 \end{restatable}
 
-\myx{TBA: (optional) add proof sketch}
-% The proof, given in \cref{sec:omitted-proofs}, analyzes how the gain function $G^{(j)}_i$ changes as one-shot profit is traded for future reallocated profit. Under homogeneity (\cref{asp:homo}), equilibrium strategies scale linearly with valuations, so the strategies within $\Subtree(j)$---and, crucially, $i$'s pricing to its other children (condition (e))---are invariant to the local change in $\pi$, while $i$'s optimal price for child $j$ weakly decreases, enlarging $E_j$.
+\emph{Proof Sketch.}
+Write $i \coloneqq \Parent(j)$. Passing from $\pi^1$ to $\pi^2$ only reallocates revenue \emph{to} $i$, and only from within $\Subtree(j)$ (conditions (a)--(e)); every other reallocation is fixed. We show each trade event $E_m$ with $m\neq j$ is unchanged, then analyze trade $j$.
 
+\emph{(i) $m\notin\Subtree(i)\cup\Path(i)$ and (ii) $m\in\Desc(j)$.} These equilibria are computed inside subtrees whose \emph{internal} reallocations are same between $\pi_1$ and $\pi_2$, so their strategies, hence $E_m$, are identical.
+
+\emph{(iii) Sibling trades $m\in\Subtree(c)$, $c\in\Children(i)\setminus\{j\}$.} By subtree decomposition (\cref{lem:subtree-decomp}), $i$'s optimal price to $c$ and equilibrium strategy within $\Subtree(c)$ depend only on the reallocations within $\Subtree(c)$ as well as the reallocations from $\Subtree(c)$ to $i$. While condition (e) ensures that these reallocations are same between $\pi_1$ and $\pi_2$. Similarly, $E_m$, are identical.
+
+
+\emph{(iv) Path trades $m\in\Path(i)\cup\{i\}$.} Both $\pi_1$ and $\pi_2$ use the baseline mechanism along this path (condition (d)), so the seller collects only her \emph{one-shot} payment. We first derive a homogeneity scaling lemma (\cref{lem:scaling} in \cref{sec:omitted-proofs}): $\ts_m(v_m)$ is linear in $v_m$, and hence $E_m = \{\bmv : v_m/v_{\Parent(m)} \ge \tau_m\}$ with $\tau_m$ depending only on $F_m$. Therefore, $E_m$ is identical between $\pi_1$ and $\pi_2$.
+
+\emph{Trade $j$.} By (ii), all strategies within $\Subtree(j)$ are unchanged, so $\ts_j$ is identical between $\pi_1$ and $\pi_2$. Only the price $\tp_j$ may differ. Split $i$'s gain $G^{(j)}_i = r_i + d_i$ into the one-shot revenue $r_i$ from $j$ and the reallocated revenue $d_i$ from $\Desc(j)$. From $\pi^1$ to $\pi^2$, $i$'s one-shot revenue shrinks (condition (b)) and its reallocated revenue grow (condition (c)): $i$ earns \emph{less} directly from $j$ and \emph{more} from what $j$ resells. As the reallocated revenue accrues only when $j$ buys and then resells, $i$ is incentivized to induce more downstream trade, and its only lever is to \emph{lower} $\tp_j$, admitting more willingness for player $j$ to buy, and resulting $E_j(\tbmp^{1,*}, \tbms^{1,*}) \subseteq E_j(\tbmp^{2,*}, \tbms^{2,*})$.
+\qed
 
 \subsection{Comparison with Baseline Mechanism}
 \label{subsec:global}
@@ -74,23 +83,10 @@ The expansion of every trade event translates directly into a social welfare gua
 
 \begin{corollary}[Welfare Improvement]
 \label{cor:welfare}
-Let \cref{asp:markov,asp:posi,asp:homo} hold and let $\pi$ be any \emph{budget-balanced} PRM, \ie, $\sum_{i \in \calI \setminus \calL} \pi(j,i) = 1$ for every $j \in \calI \setminus \{r\}$, with equilibrium $(\tbmp^*, \tbms^*)$; let $(\tbmp^{0,*}, \tbms^{0,*})$ be the equilibrium under the baseline mechanism $\pi^0$. Then $\pi$ weakly improves expected social welfare over $\pi^0$:
+Let \cref{asp:markov,asp:posi,asp:homo} hold and let $\pi$ be any \emph{budget-balanced} PRM, \ie, $\sum_{i \in \Path(j)} \pi(j,i) = 1$ for every $j \in \calI \setminus \{r\}$, with equilibrium $(\tbmp^*, \tbms^*)$; let $(\tbmp^{0,*}, \tbms^{0,*})$ be the equilibrium under the baseline mechanism $\pi^0$. Then $\pi$ weakly improves expected social welfare over $\pi^0$:
 \[
 \bbE_{\bmv \sim \calF}\big[\SW(h(\tbmp^*, \tbms^*; \bmv); \bmv)\big] \;\ge\; \bbE_{\bmv \sim \calF}\big[\SW(h(\tbmp^{0,*}, \tbms^{0,*}; \bmv); \bmv)\big].
 \]
 \end{corollary}
 
-\begin{proof}
-Fix any terminal history $h$. Summing the utilities in \cref{eq:utility-raw} over all players,
-\[
-\SW(h;\bmv) = \sum_{i \in \calI} U_i(h;v_i) = \sum_{i \in \calI} y_i v_i \;-\; \sum_{i} y_i p_i \;+\; \sum_{i} \sum_{j \in \Desc(i)} y_j\, \pi(j,i)\, p_j.
-\]
-Swapping the order of the last double sum and using that $j \in \Desc(i) \iff i \in \Path(j)$ together with the Path Only property (\cref{def:prm}),
-\[
-\sum_{i} \sum_{j \in \Desc(i)} y_j\, \pi(j,i)\, p_j = \sum_{j} y_j p_j \sum_{i \in \Path(j)} \pi(j,i) = \sum_{j} y_j p_j,
-\]
-where the last equality holds by budget balance. This cancels $\sum_i y_i p_i$, so $\SW(h;\bmv) = \sum_{i \in \calI} y_i v_i$. This is intuitive: with budget balance, monetary transfers are internal and welfare equals the total realized valuation.
-
-Now set $h = h(\tbmp^*, \tbms^*; \bmv)$. Under the threshold equilibrium, trade $i$ occurs ($y_i = 1$) exactly when every player on the path from the root to $i$ is willing to buy, \ie, $\bmv \in \bigcap_{k \in (\Path(i) \cup \{i\}) \setminus \{r\}} E_k(\tbmp^*, \tbms^*)$. By \cref{thm:global}, $E_k(\tbmp^{0,*}, \tbms^{0,*}) \subseteq E_k(\tbmp^*, \tbms^*)$ for every $k$, so $y_i$ in $h(\tbmp^*, \tbms^*; \bmv)$ is weakly larger than $y_i$ in  $h(\tbmp^{0,*}, \tbms^{0,*}; \bmv)$. Since $v_i > 0$ with probability 1, summing over $i$ and taking the expectation over $\bmv \sim \calF$ yields the claim.
-\qed
-\end{proof}
+The proof, deferred to \cref{sec:omitted-proofs}, rests on a simple identity: under budget balance the monetary transfers cancel, so welfare equals the total realized valuation, $\SW(h;\bmv) = \sum_{i} y_i v_i$. By \cref{thm:global} each indicator $y_i$ is weakly larger under $\pi$ than under the baseline, and positivity ($v_i > 0$) turns this into a weakly larger welfare.

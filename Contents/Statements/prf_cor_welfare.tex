@@ -1,0 +1,14 @@
+\begin{proof}
+Fix any terminal history $h$. Summing the utilities in \cref{eq:utility-raw} over all players,
+\[
+\SW(h;\bmv) = \sum_{i \in \calI} U_i(h;v_i) = \sum_{i \in \calI} y_i v_i \;-\; \sum_{i} y_i p_i \;+\; \sum_{i} \sum_{j \in \Desc(i)} y_j\, \pi(j,i)\, p_j.
+\]
+Swapping the order of the last double sum and using that $j \in \Desc(i) \iff i \in \Path(j)$ together with the Path Only property (\cref{def:prm}),
+\[
+\sum_{i} \sum_{j \in \Desc(i)} y_j\, \pi(j,i)\, p_j = \sum_{j} y_j p_j \sum_{i \in \Path(j)} \pi(j,i) = \sum_{j} y_j p_j,
+\]
+where the last equality holds by budget balance. This cancels $\sum_i y_i p_i$, so $\SW(h;\bmv) = \sum_{i \in \calI} y_i v_i$. This is intuitive: with budget balance, monetary transfers are internal and welfare equals the total realized valuation.
+
+Now set $h = h(\tbmp^*, \tbms^*; \bmv)$. Under the threshold equilibrium, trade $i$ occurs ($y_i = 1$) exactly when every player on the path from the root to $i$ is willing to buy, \ie, $\bmv \in \bigcap_{k \in (\Path(i) \cup \{i\}) \setminus \{r\}} E_k(\tbmp^*, \tbms^*)$. By \cref{thm:global}, $E_k(\tbmp^{0,*}, \tbms^{0,*}) \subseteq E_k(\tbmp^*, \tbms^*)$ for every $k$, so $y_i$ in $h(\tbmp^*, \tbms^*; \bmv)$ is weakly larger than $y_i$ in $h(\tbmp^{0,*}, \tbms^{0,*}; \bmv)$. Since $v_i > 0$ with probability 1, summing over $i$ and taking the expectation over $\bmv \sim \calF$ yields the claim.
+\qed
+\end{proof}
