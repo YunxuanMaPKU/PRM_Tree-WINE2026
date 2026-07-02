@@ -4,7 +4,7 @@
 \subsection{Tree-Based Data Trading Game}
 \label{subsec:game}
 
-We consider a data trading game on a rooted tree $\calT$ that generalizes the chain-based formulation of \citet{ma2026incentivizing}.
+We consider a data trading game on a rooted tree $\calT$.
 The node set $\calI$ is the set of all players, with each directed edge pointing from a parent to a child. Let $r \in \calI$ denote the root, and $\calL \subseteq \calI$ denote the set of leaf nodes. We write $N \coloneqq |\calI|$ for the total number of players. We define the following for players:
 \begin{itemize}[left=0em]
 \item $\Parent(i)$, for $i \in \calI \setminus \{r\}$: the unique parent of $i$ in $\calT$.
@@ -24,7 +24,7 @@ The node set $\calI$ is the set of all players, with each directed edge pointing
 
 Replicable data flow downward along the edges of $\calT$, originating at the root $r$. Once a non-root player $i$ receives data from its parent, it refines the data into a sellable product that it may, in turn, offer to each of its children. Player $i$'s \emph{valuation} is a single scalar $v_i \in \calV_i \subseteq \bbR$: the net worth of the data product to $i$, namely the benefit it derives minus the processing cost, which may be negative. This quantity is observed only by player $i$.
 We write $\bmv =\{v_i\}_{i \in \calI}$ as valuation profile, $\calV \coloneqq \prod_{i \in \calI} \calV_i$ for the space of valuation profiles, $\bmv_{-i}$ for the valuation profile other than player $i$'s, and $\calV_{-i} \coloneqq \prod_{k \neq i} \calV_k$ for its domain. We assume each $\calV_i$ is a closed bounded interval.
-Following \citet{ma2026incentivizing}, we let the valuation profile evolve as a Markov process down the tree.
+We let the valuation profile evolve as a Markov process down the tree.
 %  to the tree, and because a refined product inherits its quality from the input it was built upon, we let valuations evolve as a Markov process down the tree.
 
 \begin{assumption}[Markovian on Trees]
@@ -163,7 +163,7 @@ An assessment $\big((\tbmp^*, \tbmx^*), \tbmmu\big)$ of a strategy profile and a
 \[
 \bbU_i\big((\tbmp^*, \tbmx^*), \tmu_i \mid h_i, v_i\big) \;\ge\; \bbU_i\big((\tp_i, \tbmp^*_{-i}, \tx_i, \tbmx^*_{-i}), \tmu_i \mid h_i, v_i\big).
 \]
-\item \textup{(Bayes-consistency)} At every information set $(h_i, v_i)$ reached with positive probability under $(\tbmp^*, \tbmx^*)$, the belief $\tmu_i(\cdot \mid h_i, v_i)$ equals the conditional distribution of $\bmv_{-i}$ induced by the prior $\calF$ and the profile $(\tbmp^*, \tbmx^*)$ given $(h_i, v_i)$.
+\item \textup{(Bayes-consistency)} At every information set $(h_i, v_i)$ reached with positive probability under $(\tbmp^*, \tbmx^*)$, the belief $\tmu_i(\cdot \mid h_i, v_i)$ equals the posterior distribution of $\bmv_{-i}$ induced by the prior $\calF$ and the profile $(\tbmp^*, \tbmx^*)$ given $(h_i, v_i)$.
 \end{enumerate}
 \end{definition}
 

@@ -1,13 +1,13 @@
 \section{Equilibrium Computation}
 \label{sec:algo}
 
-Computing an equilibrium is far from immediate: a priori a player's strategy maps the exponentially large space of histories to multi-dimensional actions. Our structural reduction (\cref{subsec:simplification}) shows that, under the Markov property, equilibrium strategies collapse to history-independent pricing and threshold rules and a seller's optimal pricing strategy separates across its children's subtrees. Motivated by this, we further derive an exact polynomial-time algorithm for finitely supported valuations (\cref{subsec:exact-finite}) and an FPTAS for continuous valuations (\cref{subsec:approx-continuous}).
-For space limits, we defer some proofs of theorems to \cref{sec:omitted-proofs}.
+Computing an equilibrium is far from trivial: a player's strategy maps the exponentially large space of histories to multi-dimensional actions. Our structural reduction (\cref{subsec:simplification}) shows that, under the Markov property, equilibrium strategies collapse to history-independent pricing and threshold rules and a seller's optimal pricing strategy separates across its children's subtrees. Motivated by this, we further derive an exact polynomial-time algorithm for finitely supported valuations (\cref{subsec:exact-finite}) and an FPTAS for continuous valuations (\cref{subsec:approx-continuous}).
+For space limits, we defer all proofs to \cref{sec:omitted-proofs}.
 
 \subsection{Equilibrium Simplification}
 \label{subsec:simplification}
 
-We first show that the Markovian structure on trees yields a clean posterior, enabling significant strategy simplification.
+First, we show that the Markovian structure on trees yields a clean posterior, which provides a foundation for further strategy simplification.
 
 \begin{fact}
 \label{fact:simplify}
@@ -15,6 +15,7 @@ Let $\calF$ satisfy \cref{asp:markov}. For any strategy profile $(\tbmp, \tbmx)$
 \end{fact}
 
 Intuitively, $h_i = \phi_i(\bmv_{\Path(i)})$ is a deterministic function $\phi_i$ of the ancestor valuations $\bmv_{\Path(i)}$, which are conditionally independent of $\bmv_{\Desc(i)}$ given $v_i$ under \cref{asp:markov}.
+\cref{fact:simplify} allows us to set $\tmu_i(\cdot|h_i,v_i) = \calF(\bmv_{\Desc(i)} \mid v_i)$ without loss of generality.
 We now present the core simplification.
 
 \begin{restatable}{lemma}{lemSimplifySell}
@@ -30,7 +31,7 @@ There exists a perfect Bayesian equilibrium $(\tbmp, \tbmx, \tbmmu)$ and functio
 \end{equation}
 \end{restatable}
 
-\cref{lem:simplify-sell} establishes that, despite the rich history space, equilibrium pricing for each child depends only on the seller's valuation and the buying decision only on the buyer's valuation and the offered price: by the Markov property, $h_i$ carries no information about descendant valuations beyond $v_i$, so player $i$ does not benefit from more knowledge on $h_i$.
+\cref{lem:simplify-sell} establishes that, despite the rich history space, equilibrium pricing for each child depends only on the seller's valuation and the buying decision only on the buyer's valuation and the offered price: by \cref{fact:simplify}, $h_i$ carries no information about descendant valuations beyond $v_i$, so player $i$ does not benefit from more knowledge on $h_i$.
 The proof is done by backward induction on the tree.
 
 \begin{restatable}{corollary}{corSimplifyBuy}
@@ -107,8 +108,8 @@ Let \cref{asp:markov,asp:finite} hold. Given the model $(\calT, \pi, Q)$, there 
 The core difficulty is evaluating $G^{(j)}_i(w_k,p)$: by~\eqref{eq:gain-child} it is an expectation of reallocated payments over the \emph{entire} profile $\bmv_{\Subtree(j)}$, and summing naively over all profiles is exponential in $|\Subtree(j)|$. We overcome this with a forward dynamic program (\cref{alg:forward-dp}) that decomposes the expectation into a weighted sum of the $O(|\Subtree(j)|\,S)$ elementary events $Y(m,\ell) = \{v_m = w_\ell \text{ and every player from } j \text{ down to } m \text{ is willing to buy}\}$, whose probabilities propagate top-down through $\Subtree(j)$ via the Markov transition $Q$ in $O(|\Subtree(j)|\,S^2)$ time. Repeating over the $O(S)$ valuations and $O(S)$ candidate prices of $i$ gives $O(|\Subtree(j)|\,S^4)$ per child; summing over all edges and using $\sum_{j\neq r}|\Subtree(j)| = \sum_m \mathrm{depth}(m) \le Nd$ yields the $O(Nd\,S^4)$ bound.\qed
 
 
-This improves the $O(N^2 S^4)$ time complexity of the algorithm for chain-based model in \citet{ma2026incentivizing} since $d\le N$ always hold. \cref{alg:exact} makes any PRM evaluable and any PRMs pair comparable by computing and evaluating the exact equilibria under PRMs in polynomial time.
-\cref{alg:exact} is used for empirical evaluation in \cref{sec:exp}.
+\cref{alg:exact} makes any PRM evaluable and any PRMs pair comparable by computing and evaluating the exact equilibria under PRMs in polynomial time.
+In \cref{sec:exp}, we further use \cref{alg:exact} for empirical evaluation of PRMs.
 
 
 % : its induced equilibrium---and hence its social welfare and transaction volume---is computable in polynomial time, so two PRMs can be \emph{compared} by simply running the algorithm under each. This tractable evaluation is what enables the empirical search over mechanisms in \cref{sec:exp}.
