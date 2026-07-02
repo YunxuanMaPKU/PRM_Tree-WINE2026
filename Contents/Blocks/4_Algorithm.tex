@@ -107,6 +107,7 @@ Let \cref{asp:markov,asp:finite} hold. Given the model $(\calT, \pi, Q)$, there 
 
 The core difficulty is evaluating $G^{(j)}_i(w_k,p)$: by~\eqref{eq:gain-child} it is an expectation of reallocated payments over the \emph{entire} profile $\bmv_{\Subtree(j)}$, and summing naively over all profiles is exponential in $|\Subtree(j)|$. We overcome this with a forward dynamic program (\cref{alg:forward-dp}) that decomposes the expectation into a weighted sum of the $O(|\Subtree(j)|\,S)$ elementary events $Y(m,\ell) = \{v_m = w_\ell \text{ and every player from } j \text{ down to } m \text{ is willing to buy}\}$, whose probabilities propagate top-down through $\Subtree(j)$ via the Markov transition $Q$ in $O(|\Subtree(j)|\,S^2)$ time. Repeating over the $O(S)$ valuations and $O(S)$ candidate prices of $i$ gives $O(|\Subtree(j)|\,S^4)$ per child; summing over all edges and using $\sum_{j\neq r}|\Subtree(j)| = \sum_m \mathrm{depth}(m) \le Nd$ yields the $O(Nd\,S^4)$ bound.\qed
 
+\vspace{1em}
 
 \cref{alg:exact} makes any PRM evaluable and any PRMs pair comparable by computing and evaluating the exact equilibria under PRMs in polynomial time.
 In \cref{sec:exp}, we further use \cref{alg:exact} for empirical evaluation of PRMs.

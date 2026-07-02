@@ -5,22 +5,25 @@ Data has become a central production factor of the modern economy, and trading i
 A growing number of platforms---such as Snowflake Data Marketplace~\citep{SnowflakeDocs_MarketplaceAbout}, AWS Data Exchange~\citep{AWSDocs_DataExchangeLanding}, and Dawex~\citep{Dawex_Web_DataMarketplaceModel}---now intermediate the exchange of data products. 
 Yet, in practice, data markets remain far less active than their potential would suggest~\citep{Koutroumpis2017UnfulfilledPotential,OECD2021ValueOfData,EuropeanParliament2023DataActPressRelease}, and a widely cited cause is the absence of incentive structures that reward all parties whose data ultimately creates value~\citep{OECD_EASD_2019,azcoitia2022survey,bauer2024designing}.
 
-A substantial body of work studies incentives in data markets through auctions~\citep{ghosh2011selling,zhang2020selling,agarwal2024towards} and pricing~\citep{chen2019towards,mi2025multi}.
+A substantial body of work studies incentive designs in data markets through auctions~\citep{ghosh2011selling,zhang2020selling,agarwal2024towards} and pricing~\citep{chen2019towards,mi2025multi}.
 %, and federated learning~\citep{li2023martfl,yu2020fairness}. 
 %However, ... (what is the problem)
-A defining feature that sets data apart from physical goods, however, is its \emph{replicability}: once acquired, a buyer can process the data into a new product and resell it to multiple downstream buyers, so a single source can give rise to a cascade of resales~\citep{JonesTonetti2020NonrivalryData,shiller2013digital,biswas2021incentive}. 
+However, most works treat data as physical goods, overlooking the \emph{replicable} nature of data:
+% A defining feature that sets data apart from physical goods, however, is its \emph{replicability}:
+once acquired, a buyer can process the data into a new product and resell it to multiple downstream buyers, so a single source can give rise to a cascade of resales~\citep{JonesTonetti2020NonrivalryData,shiller2013digital,biswas2021incentive}, naturally forming a tree structure of data flow. 
 Because an upstream seller captures no value from these downstream resales, its incentive to trade in the first place is weakened.
 %(因此如何建议seller在resales时的incentive是解决数据交易的关键问题。important.)
-Replicability also determines the shape these transactions take: a data product can serve many buyers simultaneously---a public machine learning dataset can feed countless model trainers---whereas a buyer rarely purchases the same data twice. 
-Data transactions thus naturally organize into a \emph{tree} rooted at the original source.
-\emph{Profit reallocation}---redistributing part of downstream revenue back to upstream contributors---has recently emerged as a remedy for the incentive problem, yet no existing treatment covers this general structure: most previous works assume that each seller resells to at most one buyer~\citep{xin2025tbds,ma2026incentivizing,manea2018intermediation,condorelli2017bilateral}.
+% Replicability also determines the shape these transactions take: a data product can serve many buyers simultaneously---a public machine learning dataset can feed countless model trainers---whereas a buyer rarely purchases the same data twice. 
+% Data transactions thus naturally organize into a \emph{tree} rooted at the original source.
+Recent work proposes \emph{profit reallocation}---redistributing part of downstream revenue back to upstream contributors---as a remedy for this incentive problem~\citep{xin2025tbds,ma2026incentivizing}. Yet these analyses, like sequential-trade models more broadly~\citep{manea2018intermediation,condorelli2017bilateral}, assume that each seller resells to at most one buyer.
+The design and effects of profit reallocation on the tree-structured markets that replicable data naturally induces remain unexplored.
 
-To close this gap, we study profit reallocation on \emph{tree-structured} data markets. 
-We model data trading as a sequential game on a rooted tree in which the root originates the data and every player may process and resell its data product to multiple children (\cref{sec:model}). 
+To close this gap, we develop the first principled framework for profit reallocation on \emph{tree-structured} data markets.
+We model data trading as a sequential game on a rooted tree in which the root player originates the data and every player may process and resell its data product to multiple children (\cref{sec:model}). 
 On top of this game we formalize a \emph{profit reallocation mechanism} (PRM): whenever a trade occurs, part of its payment is redistributed to the buyer's ancestors by a budget-feasible redistribution rule---the total amount redistributed never exceeds the payment---so every player benefits from the trade.
 
-Given a PRM, the first challenge is to understand how strategic players will behave, \ie, to compute the induced equilibrium; throughout we adopt the strong notion of \emph{perfect Bayesian equilibrium}, which demands optimality at every information set.
-Branching makes this computation formidable: a seller prices \emph{every} child, so its pricing action is a vector whose dimension equals its number of children, and its utility couples the entire subtree beneath it---a naive evaluation is exponential in the tree size.
+Given a PRM, the first challenge is to understand how strategic players will behave, \ie, to compute the induced equilibrium; throughout we adopt the notion of \emph{perfect Bayesian equilibrium}, which demands optimality at every information set.
+Branching makes this computation formidable: a seller prices data product to \emph{every} child, so its pricing action is a vector whose dimension equals its number of children, and its utility couples the entire subtree beneath it---a naive evaluation is exponential in the tree size.
 Fortunately, a key structural insight dissolves this difficulty: under the Markovian valuation process, sibling subtrees are conditionally independent given the seller's valuation, so the seller's pricing problem \emph{separates} across its children.
 This subtree decomposition collapses equilibrium strategies to single-variable functions and lets a seller optimize each child's price separately, eliminating any joint optimization over the price vector.
 Building on it, we design a polynomial-time exact algorithm for discrete valuations and a fully polynomial-time approximation scheme (FPTAS) for continuous valuations (\cref{sec:algo}), turning the evaluation of any PRM into a tractable computation.
@@ -32,7 +35,7 @@ Finally, our experiments (\cref{sec:exp}) confirm that the advantage of profit r
 
 In summary, our contributions are:
 \begin{itemize}[left=0em]
-\item A tree-based data trading game that captures one-to-many resale, together with a generalized profit reallocation mechanism on it (\cref{sec:model});
+\item A tree-based data trading game that captures one-to-many resale, together with a general, budget-feasible profit reallocation mechanism on it (\cref{sec:model});
 \item Efficient equilibrium computation---a polynomial-time exact algorithm and an FPTAS---that makes any PRM evaluable (\cref{sec:algo});
 \item A theoretical guarantee that any budget-feasible PRM weakly expands trade, and any budget-balanced PRM additionally weakly improves welfare, over the baseline mechanism on trees (\cref{sec:theoretic});
 \item Experiments confirming that the advantage is robust to violations of the theoretical assumptions and strengthens as the tree size grows (\cref{sec:exp}).
