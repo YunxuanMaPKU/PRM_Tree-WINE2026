@@ -14,7 +14,7 @@ $\Pr_{\bmv \sim \calF}[v_i > 0] = 1$ for all $i \in \calI$.
 Under \cref{asp:markov}, for all $\alpha, w, v > 0$ and $i \in \calI \setminus \{r\}$: $F_i(\alpha v \mid \alpha w) = F_i(v \mid w)$.
 \end{assumption}
 
-Positivity says that a data product is always worth more than the cost of producing it. Homogeneity is a scaling property common in economic modeling~\citep[\S6.2]{AGT:nisan_algorithmic_2007}; it holds whenever the value of the output is proportional to the value of the input.
+Positivity says that a data product is always worth more than the cost of producing it. Homogeneity is a scaling property common in economic modeling~\citep[\S6.2]{AGT:nisan_algorithmic_2007}, \citep[\S3.2.3]{DSGE}; it holds whenever the value of the output is proportional to the value of the input.
 
 Given a simplified strategy profile $(\tbmp, \tbms)$, we define the \emph{trade event} for trade $j \in \calI \setminus \{r\}$ as
 \begin{equation}
@@ -39,7 +39,7 @@ For a non-root player $j \in \calI \setminus \{r\}$, let $i \coloneqq \Parent(j)
 \item $\pi^1(m, k) = \pi^2(m, k)$ for all $m \in \calI \setminus \{r\}$ and all $k \in \calI \setminus \{i\}$.
 \item $\pi^1(j, i) \le \pi^2(j, i)$: player $i$'s one-shot profit from trade $j$ is weakly smaller under $\pi^1$.
 \item $\pi^1(m, i) \ge \pi^2(m, i)$ for all $m \in \Desc(j)$: player $i$'s reallocated profit from downstream trades is weakly larger under $\pi^1$.
-\item $\pi^1(m, k) = \pi^2(m, k) = \pi^0(m, k)$ for all $k \in \Path(i)$ and all $m \in \calI \setminus \{r\}$: both mechanisms use baseline allocation for all strict ancestors of $i$.
+\item $\pi^1(m, k) = \pi^2(m, k) = \pi^0(m, k)$ for all $k \in \Path(i)$ and all $m \in \calI \setminus \{r\}$: both mechanisms use baseline mechanisms for all strict ancestors of $i$.
 \item $\pi^1(m, i) = \pi^2(m, i)$ for all $m \notin \Subtree(j)$: player $i$'s reallocation is unchanged outside $\Subtree(j)$.
 \end{enumerate}
 That is, relative to $\pi^2$, the dominating mechanism $\pi^1$ shifts $i$'s reward away from its one-shot payment on trade $j$ toward the downstream resale within $\Subtree(j)$, leaving everything else fixed.
@@ -57,7 +57,7 @@ Let $\calF$ satisfy \cref{asp:markov,asp:posi,asp:homo}. Let $\pi^1$ locally dom
 \emph{Proof Sketch.}
 Write $i \coloneqq \Parent(j)$. The two mechanisms differ only in how they reward $i$, and only from within $\Subtree(j)$ (conditions (a)--(e)); every other reallocation is fixed. We show each trade event $E_m$ with $m\neq j$ is unchanged, then analyze trade $j$.
 
-\emph{(i) $m\notin\Subtree(i)\cup\Path(i)$ and (ii) $m\in\Desc(j)$.} These equilibria are computed inside subtrees whose \emph{internal} reallocations are same between $\pi_1$ and $\pi_2$, so their strategies, hence $E_m$, are identical.
+\emph{(i) $m\notin\Subtree(i)\cup\Path(i)$ and (ii) $m\in\Desc(j)$.} These equilibria are computed inside subtrees whose \emph{internal} profit reallocations are same between $\pi_1$ and $\pi_2$, so their equilibrium strategies, hence $E_m$, are identical.
 
 \emph{(iii) Sibling trades $m\in\Subtree(c)$, $c\in\Children(i)\setminus\{j\}$.} By subtree decomposition (\cref{lem:subtree-decomp}), $i$'s optimal price to $c$ and equilibrium strategy within $\Subtree(c)$ depend only on the reallocations within $\Subtree(c)$ as well as the reallocations from $\Subtree(c)$ to $i$. While condition (e) ensures that these reallocations are same between $\pi_1$ and $\pi_2$. Similarly, $E_m$, are identical.
 
@@ -80,7 +80,7 @@ Let $\pi^0$ be the baseline mechanism (\cref{def:baseline}) and $\pi$ be any fea
 
 \input{Contents/Statements/prf_thm_global}
 
-The expansion of every trade event translates directly into a social welfare guarantee.
+The expansion of every trade event translates directly into a social welfare improvement.
 
 \begin{corollary}[Welfare Improvement]
 \label{cor:welfare}
@@ -90,4 +90,4 @@ Let \cref{asp:markov,asp:posi,asp:homo} hold and let $\pi$ be any \emph{budget-b
 \]
 \end{corollary}
 
-The proof, deferred to \cref{sec:omitted-proofs}, rests on a simple identity: under budget balance the monetary transfers cancel, so welfare equals the total realized valuation, $\SW(h;\bmv) = \sum_{i} y_i v_i$. By \cref{thm:global} each indicator $y_i$ is weakly larger under $\pi$ than under the baseline, and positivity ($v_i > 0$) turns this into a weakly larger welfare.
+The proof, deferred to \cref{sec:omitted-proofs}, rests on a simple identity: under budget balance the monetary transfers cancel, so welfare equals the total realized valuation, $\SW(h;\bmv) = \sum_{i} y_i v_i$. By \cref{thm:global} each indicator $y_i$ is weakly larger under $\pi$ than under the baseline $\pi^0$, and positivity ($v_i > 0$) turns this into a weakly larger welfare.

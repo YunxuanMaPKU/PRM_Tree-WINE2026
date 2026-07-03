@@ -1,7 +1,7 @@
 \section{Experiments}
 \label{sec:exp}
 
-We complement the theory with exact computational experiments addressing four questions: (a) how much profit reallocation improves over the baseline on trees; (b) whether the gains survive dropping \cref{asp:homo,asp:posi}; (c) how they scale with the tree depth $d$ and branching factor $m$ in regular trees; and (d) whether they persist on an irregular tree, and how our general family compares with a fixed-ratio rule \citep{xin2025tbds}.
+We complement the theory with exact computational experiments addressing four questions: (a) how much profit reallocation improves over the baseline on trees; (b) whether the gains survive dropping \cref{asp:homo,asp:posi}; (c) how they scale with the tree depth $d$ and branching factor $m$ in regular trees; and (d) whether they persist on an irregular tree.
 
 \subsection{Setup}
 
@@ -21,9 +21,9 @@ Each child's valuation follows a local random walk on the grid: from a parent $i
 We compare four budget-balanced PRMs. For a trade $m$ with ancestors $\Path(m)$, writing $\ell_m \coloneqq |\Path(m)|$ and, for $k \in \Path(m)$, $s(m,k) \coloneqq \mathrm{depth}(\Parent(m)) - \mathrm{depth}(k) \in \{0,\ldots,\ell_m-1\}$ for the number of steps from the direct seller $\Parent(m)$ up to $k$:
 \begin{itemize}[left=0em]\itemsep0.1em
 \item \textbf{RAW} (baseline, \cref{def:baseline}): the direct seller keeps everything, $\pi(m,\Parent(m)) = 1$ and $\pi(m,k) = 0$ for $k \neq \Parent(m)$.
-\item \textbf{TBDS}~\citep{xin2025tbds}: a fixed-ratio rule with $\alpha = 0.5$ that shares a trade's payment geometrically up the ancestors---$\pi(m,k) = (1-\alpha)\,\alpha^{\,s(m,k)}$ for $k \neq r$, with the root absorbing the remainder $\pi(m,r) = \alpha^{\,\ell_m-1}$; a special case of our family used as an external baseline.
+\item \textbf{TBDS}: a fixed-ratio rule with $\alpha = 0.5$ that shares a trade's payment geometrically up the ancestors---$\pi(m,k) = (1-\alpha)\,\alpha^{\,s(m,k)}$ for $k \neq r$, with the root absorbing the remainder $\pi(m,r) = \alpha^{\,\ell_m-1}$; this mechanism is originally proposed by \citet{xin2025tbds} and is a special case of our PRMs.
 \item \textbf{AVE}: each trade's payment is split uniformly among its ancestors, $\pi(m,k) = 1/\ell_m$ for every $k \in \Path(m)$.
-\item \textbf{OPT}: a budget-balanced PRM found by a zeroth-order optimizer maximizing equilibrium welfare, run separately for each model.
+\item \textbf{OPT}: a budget-balanced PRM optimized by a zeroth-order optimizer maximizing equilibrium welfare, run separately for each model.
 \end{itemize}
 
 Note that RAW, TBDS, and AVE are model-independent PRMs, while OPT relies on the underlying distribution $\calF$.
@@ -37,7 +37,7 @@ We report two equilibrium quantities: \emph{social welfare} $\SW=\sum_{i\in\calI
 \input{Contents/Floats/tab_exp}
 
 \paragraph{Welfare and trade improvements (a, b).}
-\cref{tab:exp} reports both metrics for a representative configuration ($d=5$, $m=2$). Every PRM improves over RAW across all four models, including those violating \cref{asp:homo,asp:posi}. Averaged over the four models, the model-independent AVE and TBDS already yield large gains over RAW---$289\%/112\%$ and $189\%/67\%$ in transaction volume/welfare.
+\cref{tab:exp} reports both metrics for a representative configuration ($d=5$, $m=2$). Every PRM improves over RAW across all four models, including those violating \cref{asp:homo,asp:posi}. Averaged over the four models, the model-independent AVE and TBDS already yield large gains over RAW---$289\%/112\%$ and $189\%/67\%$ in transaction volume/social welfare.
 The results suggest that PRMs remain effective across diverse scenarios, even when \cref{asp:homo,asp:posi} no longer hold.
 %  As AVE and TBDS are fixed closed-form rules needing no per-market tuning, we regard them as the deployable mechanisms and OPT as the welfare ceiling of the design space.
 
@@ -46,7 +46,7 @@ The results suggest that PRMs remain effective across diverse scenarios, even wh
 \input{Contents/Floats/fig_exp_vary}
 
 \paragraph{Scaling with depth and branching (c).}
-Varying $2 \le d\le 8$ and $m\in\{1,2,3\}$ with results shown in \cref{fig:exp-vary}, the advantage of PRMs over RAW generally grows with both depth $d$ and branching $m$---deeper, bushier trees create more downstream value to internalize---and is robust to violations of positivity and homogeneity.
+Varying $2 \le d\le 8$ and $m\in\{1,2,3\}$ with results shown in \cref{fig:exp-vary}, the advantage of PRMs over RAW generally grows with both depth $d$ and branching $m$---deeper, bushier trees create more downstream profits to reallocate---and is robust to violations of positivity and homogeneity.
 
 \paragraph{Irregular trees (d).}
-We report the results of the \emph{irregular} tree in \cref{fig:tree-notation}, shown in \cref{tab:exp-irregular}, \cref{sec:app-experiments}. The picture is unchanged---PRMs beat RAW for every model, indicating that the benefit of PRMs is not specific to symmetric trees.
+We report the results of the \emph{irregular} tree structure as in \cref{fig:tree-notation}, shown in \cref{tab:exp-irregular}, \cref{sec:app-experiments}. The picture is unchanged---PRMs beat RAW for every model, indicating that the benefit of PRMs is not specific to symmetric trees.

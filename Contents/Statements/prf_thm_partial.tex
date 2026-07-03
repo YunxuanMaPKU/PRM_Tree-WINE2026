@@ -38,14 +38,16 @@ d^k_i(v_i, p_j) &\;\coloneqq\; \bbE\!\bigg[\one\{\ts^*_j(v_j) \ge p_j\} \cdot \s
 \end{align*}
 Here $r^k_i$ is the one-shot profit from trade $j$, and $d^k_i$ is the future reallocated profit from downstream trades. Note that the equilibrium strategies $\ts^*_j, \tp^*_m$ and the conditional trade indicators $y_{m \mid j}$ within $\Subtree(j)$ are the same under both mechanisms (proven above), so we drop the superscript $k$ from these quantities.
 
-Let $p^k = \tp^{k,*}_j(v_i)$ denote the optimal price under $\pi^k$. We establish two key monotonicity properties:
+Let $p^k = \tp^{k,*}_j(v_i)$ denote the optimal price under $\pi^k$.
 
-\emph{Property 1.} If $\pi^2(j,i) = 0$, then condition~(b) forces $\pi^1(j,i) = 0$, so $r^1_i \equiv r^2_i \equiv 0$, $\Delta r_i \equiv 0$, and the implication~\eqref{eq:prf:partial:prop1} below holds trivially; assume henceforth $\pi^2(j,i) > 0$. Since $\ts^{1,*}_j = \ts^{2,*}_j$, we have $r^1_i(v_i, p) = \frac{\pi^1(j,i)}{\pi^2(j,i)}\, r^2_i(v_i, p)$ with coefficient $\frac{\pi^1(j,i)}{\pi^2(j,i)} \le 1$ by condition~(b). Consequently, for any $p, p'$:
+\emph{Degenerate case $\pi^1(j,i) = 0$.} Then $r^1_i \equiv 0$, so $G^{(j),1}_i(v_i, \cdot) = d^1_i(v_i, \cdot)$, which is weakly decreasing in $p$ (Property~2 below). The smallest-maximizer tie-break therefore selects $\tp^{1,*}_j(v_i) = 0 \le \tp^{2,*}_j(v_i)$, so the desired inequality holds. \emph{We assume henceforth $\pi^1(j,i) > 0$}, whence $\pi^2(j,i) \ge \pi^1(j,i) > 0$ by condition~(b). We establish two key monotonicity properties.
+
+\emph{Property 1.} Since $\ts^{1,*}_j = \ts^{2,*}_j$ and $\pi^1(j,i), \pi^2(j,i) > 0$, we have $r^1_i(v_i, p) = \frac{\pi^1(j,i)}{\pi^2(j,i)}\, r^2_i(v_i, p)$ with coefficient $\frac{\pi^1(j,i)}{\pi^2(j,i)} \in (0, 1]$ by condition~(b). Consequently, for any $p, p'$:
 \begin{equation}
 \label{eq:prf:partial:prop1}
 r^1_i(v_i, p) \ge r^1_i(v_i, p') \quad\Longrightarrow\quad \Delta r_i(v_i, p) \le \Delta r_i(v_i, p'),
 \end{equation}
-where $\Delta r_i \coloneqq r^1_i - r^2_i$, because $\Delta r_i = (\frac{\pi^1(j,i)}{\pi^2(j,i)} - 1) r^2_i$ and the coefficient is nonpositive.
+where $\Delta r_i \coloneqq r^1_i - r^2_i$: since the coefficient is \emph{strictly} positive, $r^1_i(v_i,p) \ge r^1_i(v_i,p')$ is equivalent to $r^2_i(v_i,p) \ge r^2_i(v_i,p')$, and $\Delta r_i = (\frac{\pi^1(j,i)}{\pi^2(j,i)} - 1) r^2_i$ has nonpositive coefficient, so the implication follows.
 
 \emph{Property 2.} For $p' > p$, we have $\one\{\ts^*_j(v_j) \ge p'\} \le \one\{\ts^*_j(v_j) \ge p\}$ pointwise. Since prices are nonnegative and $y_{m|j} \in \{0,1\}$, the integrand in $d^k_i$ is nonnegative and is multiplied by $\one\{\ts^*_j(v_j) \ge p\}$, so $d^k_i(v_i, p)$ is weakly decreasing in $p$. For $\Delta d_i(v_i, p) \coloneqq d^1_i(v_i, p) - d^2_i(v_i, p)$:
 \begin{align*}

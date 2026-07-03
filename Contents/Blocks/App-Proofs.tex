@@ -31,7 +31,7 @@ $\text{gain} \gets \pi(j, i) \cdot p_j \cdot \sum_{\ell \in [S]} \Pr[Y(j, \ell)]
 \KwIn{$\varepsilon > 0$, tree $\calT$, PRM $\pi$, conditional CDFs $\{F_i\}$, support $[L_0, H_0]$, Lipschitz constant $K_0$}
 \KwOut{$\varepsilon$-approximate equilibrium $(\tbmp^*, \tbms^*)$}
 $R \gets \max(|L_0|, |H_0|)$\;
-$\varepsilon_0 \gets \frac{\min(\varepsilon, 1)}{8(1 + NK_0)(1 + R)}$\;
+$\varepsilon_0 \gets \frac{\min(\varepsilon, 1)}{8(1 + dK_0)(1 + R)}$\;
 $S \gets \lfloor (H_0 - L_0)/\varepsilon_0 \rfloor + 1$\;
 $W \gets \{L_0 + \ell \cdot \varepsilon_0\}_{\ell = 0}^{S-1}$\;
 \For{each $i \in \calI \setminus \{r\}$, $k, \ell \in \{0, \ldots, S-1\}$}{

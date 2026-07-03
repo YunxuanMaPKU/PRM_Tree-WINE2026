@@ -11,7 +11,7 @@ Specifically, operation $(m,t)$ switches player $i_m$'s reallocation \emph{from 
 \pi^{[\sigma-1]}(n, k), & \text{otherwise.}
 \end{cases}
 \]
-Equivalently, for trade index $n \in \calI \backslash \{r\}$ and player index $k\in \calI \backslash \calL$ where $k \in \Path(n)$, $\pi^{[\sigma]}(n,k)$ equals the target $\pi(n,k)$ once the operation indexed by the pair $\big(k,(\Path(n)\cup\{n\}) \cap \Children(k) \big)$\footnote{Here $(\Path(n)\cup\{n\}) \cap \Children(k)$ means player $k$'s only child that lies in the path between player $k$ and player $n$.} has occurred, and equals the baseline $\pi^0(n,k)$ otherwise.
+Equivalently, for trade index $n \in \calI \backslash \{r\}$ and player index $k\in \calI \backslash \calL$ where $k \in \Path(n)$, let $c_k(n)$ denote the unique child of $k$ on the path from $k$ to $n$, \ie, the single element of $(\Path(n)\cup\{n\}) \cap \Children(k)$. Then $\pi^{[\sigma]}(n,k)$ equals the target $\pi(n,k)$ once the operation switching $k$'s reallocation from $\Subtree(c_k(n))$ (\ie, the operation indexed by $(m,t)$ where $i_m = k, j_{m,t} = c_k(n)$) has occurred, and equals the baseline $\pi^0(n,k)$ otherwise.
 Let $(\tbmp^{[\sigma],*}, \tbms^{[\sigma],*})$ be the equilibrium under $\pi^{[\sigma]}$ and abbreviate $E^{[\sigma]}_n \coloneqq E_n(\tbmp^{[\sigma],*}, \tbms^{[\sigma],*})$.
 
 Fix operation $(m,t)$ and write $i \coloneqq i_m$, $j \coloneqq j_{m,t}$, $\pi^- \coloneqq \pi^{[\sigma-1]}$, $\pi^+ \coloneqq \pi^{[\sigma]}$. By construction $\pi^-$ and $\pi^+$ agree everywhere except on $\{\pi(n,i) : n \in \Subtree(j)\}$. We verify that $\pi^+$ locally dominates $\pi^-$ at trade $j$ (\cref{def:local-diff}), \ie, $\pi^+$ plays the role of $\pi^1$ and $\pi^-$ that of $\pi^2$:
@@ -25,7 +25,7 @@ Fix operation $(m,t)$ and write $i \coloneqq i_m$, $j \coloneqq j_{m,t}$, $\pi^-
 
 We next show that $\pi^{[\sigma]}$ is a valid PRM (satisfying Path Only and Budget Feasibility) for every $\sigma$:
 \begin{itemize}[left=0em]
-\item[(1)] For Path Only, each $\pi^{[\sigma]}(n,k)$ is either $\pi(n,k)$ or $\pi^0(n,k)$. As Path Only holds for both $\pi(n,k)$ and $\pi^0(n,k)$, Path Only must hold for $\pi^{[\sigma]}(n,k)$.
+\item[(1)] For Path Only, each element of $\pi^{[\sigma]}(n,k)$ is either $\pi(n,k)$ or $\pi^0(n,k)$. As Path Only holds for both $\pi(\cdot)$ and $\pi^0(\cdot)$, Path Only must hold for $\pi^{[\sigma]}(\cdot)$.
 \item[(2)] For Budget Feasibility, fix a trade $n$ with ancestors $\Path(n) = \{k_1, \ldots, k_q\}$ ordered from $k_1 = \Parent(n)$ up to the root $k_q = r$. Since operations process trades in a bottom-up order, $\pi^{[\sigma]}(n,k_i)$ is switched from $\pi^0$ to $\pi$ before $\pi^{[\sigma]}(n,k_{i+1})$; hence at any stage the ``already switched ancestors'' are $K = \{k_1, \ldots, k_a\}$ or $K = \emptyset$.
 We consider two subcase: (a) If $K = \emptyset$, then $\sum_b \pi^{[\sigma]}(n,k_b) = \sum_b \pi^0(n,k_b) = 1$. (b) If $K = \{k_1, \ldots, k_a\}$, notice that $\pi^0(n,k_i) = 0$ for $i > a \ge 1$, thus $\sum_b \pi^{[\sigma]}(n,k_b) = \sum_{b \le a} \pi^{[\sigma]}(n,k_b) = \sum_{b \le a} \pi(n,k_b) \le \sum_{b} \pi(n,k_b) \le 1$ by feasibility of $\pi$. 
 \end{itemize}

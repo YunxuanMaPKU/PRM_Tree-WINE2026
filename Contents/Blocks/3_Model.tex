@@ -5,7 +5,7 @@
 \label{subsec:game}
 
 We consider a data trading game on a rooted tree $\calT$.
-The node set $\calI$ is the set of all players, with each directed edge pointing from a parent to a child. Let $r \in \calI$ denote the root, and $\calL \subseteq \calI$ denote the set of leaf nodes. We write $N \coloneqq |\calI|$ for the total number of players. We define the following for players:
+The node set $\calI$ is the set of all players, with each directed edge pointing from a parent to a child. Let $r \in \calI$ denote the root, and $\calL \subseteq \calI$ denote the set of leaf nodes. We write $N \coloneqq |\calI|$ for the total number of players. We define the following functions for players:
 \begin{itemize}[left=0em]
 \item $\Parent(i)$, for $i \in \calI \setminus \{r\}$: the unique parent of $i$ in $\calT$.
 \item $\Children(i)$, for $i \in \calI$: the set of children of $i$. For leaf nodes $i \in \calL$, $\Children(i) = \varnothing$.
@@ -80,12 +80,12 @@ This assumption fits the tree structure: a player $i$'s product's worth is gover
 \subsection{Player Action}
 \label{subsec:action}
 
-Each edge $(i,j)$ with $j \in \Children(i)$ is a potential trade. The seller $i$ first commits to a posted price $p_j \in \bbR_+$ for child $j$; seeing this price, player $j$ responds with a binary decision $x_j \in \{0,1\}$, describing her willingness to buy ($x_j = 1$) or not ($x_j = 0$).
+Each non-root player $j$ corresponds to a potential trade $j$. The seller $i = \Parent(j)$ first commits to a posted price $p_j \in \bbR_+$ for player $j$; seeing this price, player $j$ responds with a binary decision $x_j \in \{0,1\}$, describing her willingness to buy ($x_j = 1$) or not ($x_j = 0$).
 
-A trade $i$ actually occurs if and only if trade $\Parent(i)$ occurs and player $i$ is willing to buy the data from player $\Parent(i)$. We define the indicator of whether trade $i$ occurs:
+Trade $i$ actually occurs if and only if trade $\Parent(i)$ occurs and player $i$ is willing to buy the data from player $\Parent(i)$. We define the indicator of whether trade $i$ occurs:
 \begin{equation}
 \label{eq:yi}
-y_i \;\coloneqq\; \prod_{j \in \Path(i) \cup \{i\}} x_j,
+y_i \;\coloneqq\; \prod_{j \in \Path(i) \cup \{i\}} x_j, \forall i \in \calI \backslash\{r\},
 \end{equation}
 where we set $x_r \coloneqq 1$ and $p_r \coloneqq 0$ by convention (the root player initially possesses the data).
 If $y_i = 1$, trade $i$ occurs, player $i$ obtains the data, realizes valuation $v_i$, and pays $p_i$; otherwise $y_i = 0$, player $i$ gains nothing and pays nothing. For $m \in \Desc(j)$, we define the \emph{conditional trade indicator}:
@@ -99,7 +99,7 @@ which is the product of trade decisions along the path from $j$ to $m$, excludin
 \subsection{Player Strategy}
 \label{subsec:strategy}
 
-At each stage, a player observes the trading history along their path from the root. For player $i$, the observed history is:
+At each stage, a player observes the public trading history along their path from the root. For player $i$, the observed history is:
 \begin{equation}
 \label{eq:hi}
 h_i = \big\{(j, p_j, x_j)\big\}_{j \in \Path(i) \setminus \{r\}} \cup \{(i, p_i)\},
@@ -109,7 +109,7 @@ which includes all past trade outcomes on the path from $r$ to $i$ and the price
 A strategy for player $i$ consists of:
 \begin{itemize}[left=0em]
 \item \textbf{Pricing strategy} (for $i \notin \calL$): $\tp_i: \calH_i \times \Children(i) \times \calV_i \to \bbR_+$, where $\tp_i(h_i, j, v_i)$ is the price player $i$ offers to child $j$.
-\item \textbf{Buying strategy} (for $i \neq r$): $\tx_i: \calH_i \times \calV_i \to \{0, 1\}$, where $\tx_i(h_i, v_i)$ is the player $i$'s willingness to buy given public history and her private valuation $v_i$.
+\item \textbf{Buying strategy} (for $i \neq r$): $\tx_i: \calH_i \times \calV_i \to \{0, 1\}$, where $\tx_i(h_i, v_i)$ is the player $i$'s willingness to buy given public trading history and her private valuation $v_i$.
 \end{itemize}
 We call $(\tbmp, \tbmx) = \big(\{\tp_i\}_{i \notin \calL},\; \{\tx_i\}_{i \neq r}\big)$ a strategy profile.
 
@@ -121,7 +121,7 @@ We call $(\tbmp, \tbmx) = \big(\{\tp_i\}_{i \notin \calL},\; \{\tx_i\}_{i \neq r
 \label{def:game-evolve}
 Given a valuation profile $\bmv$ and a strategy profile $(\tbmp, \tbmx)$, the game evolves recursively from root to leaves:\\
 1. Initialize $h_r = \varnothing$.\\
-2. For each non-leaf player $i$ and each child $j \in \Children(i)$, the seller posts price $p_j = \tp_i(h_i, j, v_i)$.\\
+2. For each non-leaf player $i$ and each child $j \in \Children(i)$, player $i$ posts price $p_j = \tp_i(h_i, j, v_i)$ to child $j$.\\
 3. Each non-root player $i$ decides $x_i = \tx_i(h_i, v_i)$.\\
 4. The game concludes with the terminal history $h = \{(i, p_i, x_i)\}_{i \in \calI \setminus \{r\}}$.
 \end{definition}

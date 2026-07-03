@@ -1,5 +1,5 @@
 \begin{proof}
-We prove that \cref{alg:exact,alg:forward-dp} correctly compute a perfect Bayesian equilibrium in $O(N^2 S^4)$ time.
+We prove that \cref{alg:exact,alg:forward-dp} correctly compute a perfect Bayesian equilibrium in $O(N d\, S^4)$ time, where $d$ is the depth of $\calT$.
 
 \paragraph{Price Simplification.}
 For a fixed non-leaf player $i$ and child $j \in \Children(i)$, define the finite set of candidate prices:
@@ -95,7 +95,7 @@ By construction, the strategies $\ts^*_i(w_k) = s^*(i,k)$ and $\tp^*_j(w_k) = p^
 \paragraph{Complexity.}
 The recursion~\eqref{eq:prf:algo:Y-recurse} processes each edge $(m, m')$ in $\Subtree(j)$ in $O(S^2)$ time (summing over $\ell$ for each $\ell'$). Over all $|\Subtree(j)|$ nodes, the Forward DP takes $O(|\Subtree(j)| \cdot S^2)$ time. This is repeated for $S$ seller valuations and at most $S$ candidate prices, giving $O(|\Subtree(j)| \cdot S^4)$ per edge $(i,j)$. The Backward DP sums over all edges:
 \[
-\sum_{j \in \calI \setminus \{r\}} O(|\Subtree(j)| \cdot S^4) \;=\; O\bigg(\sum_{j \in \calI \setminus \{r\}} |\Subtree(j)|\bigg) \cdot S^4 \;=\; O(N d\, S^4) \;\le\; O(N^2 S^4),
+\sum_{j \in \calI \setminus \{r\}} O(|\Subtree(j)| \cdot S^4) \;=\; O\bigg(\sum_{j \in \calI \setminus \{r\}} |\Subtree(j)|\bigg) \cdot S^4 \;=\; O(N d\, S^4),
 \]
 using $\sum_{j \neq r} |\Subtree(j)| = \sum_{m \in \calI} |\Path(m)| = \sum_{m} \mathrm{depth}(m) \le N d$: each node $m$ is counted once for each $j \neq r$ with $m \in \Subtree(j)$---namely $m$ itself and each of its strict ancestors below the root, $\mathrm{depth}(m)$ in total---where $d = \max_m \mathrm{depth}(m)$ is the depth of $\calT$, at most $N$.
 \qed

@@ -15,7 +15,7 @@ Let $\calF$ satisfy \cref{asp:markov}. For any strategy profile $(\tbmp, \tbmx)$
 \end{fact}
 
 Intuitively, $h_i = \phi_i(\bmv_{\Path(i)})$ is a deterministic function $\phi_i$ of the ancestor valuations $\bmv_{\Path(i)}$, which are conditionally independent of $\bmv_{\Desc(i)}$ given $v_i$ under \cref{asp:markov}.
-\cref{fact:simplify} allows us to set $\tmu_i(\cdot|h_i,v_i) = \calF(\bmv_{\Desc(i)} \mid v_i)$ without loss of generality.
+\cref{fact:simplify} allows us to set $\tmu_i(\bmv_{\Desc(i)}|h_i,v_i) = \calF(\bmv_{\Desc(i)} \mid v_i)$ without loss of generality.
 We now present the core simplification.
 
 \begin{restatable}{lemma}{lemSimplifySell}
@@ -109,7 +109,7 @@ The core difficulty is evaluating $G^{(j)}_i(w_k,p)$: by~\eqref{eq:gain-child} i
 
 \vspace{1em}
 
-\cref{alg:exact} makes any PRM evaluable and any PRMs pair comparable by computing and evaluating the exact equilibria under PRMs in polynomial time.
+\cref{alg:exact} makes PRMs evaluable by computing and evaluating the exact equilibria under PRMs in polynomial time.
 In \cref{sec:exp}, we further use \cref{alg:exact} for empirical evaluation of PRMs.
 
 
@@ -174,4 +174,4 @@ Under \cref{asp:markov}, assume $f_i$ is $K_0$-log-Lipschitz for all $i \in \cal
 \end{restatable}
 
 The algorithm (\cref{alg:approx}, deferred to \cref{sec:omitted-proofs}) discretizes the continuous supports into a finite grid, forming a discretized model with distribution $\hat\calF$, and computes its exact equilibrium via \cref{alg:exact}. The proof, also in \cref{sec:omitted-proofs}, shows that exact equilibria of the discretized model are approximate equilibria of the original continuous model, using the log-Lipschitz condition to bound the discretization error.
-Consequently, the discretized model is a provably faithful approximation for the continuous one.
+The result indicates that the discretized model is a provably faithful approximation for the continuous one.

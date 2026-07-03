@@ -6,7 +6,7 @@ Fix a discretization precision $\varepsilon_0 > 0$ (to be determined). Define th
 \[
 S \;:=\; \big\lfloor \varepsilon_0^{-1}(H_0 - L_0)\big\rfloor + 1, \qquad w_\ell \;:=\; \ell \cdot \varepsilon_0 + L_0,\quad 0 \le \ell \le S.
 \]
-The grid points partition $[L_0, H_0]$ into cells $I_\ell = [w_\ell, w_{\ell+1})$. Construct a discretized model by defining transition probabilities between grid points: for each non-root $i$ and $k, \ell \in \{0, \ldots, S-1\}$,
+These $S+1$ points $w_0, \ldots, w_S$ define $S$ discrete valuations (the states of the discretized model are indexed by $\ell \in \{0,\ldots,S-1\}$). Since $S \ge \varepsilon_0^{-1}(H_0 - L_0)$, the top point satisfies $w_S = S\varepsilon_0 + L_0 \ge H_0$, so the cells $I_\ell = [w_\ell, w_{\ell+1})$ for $0 \le \ell \le S-1$ cover $[L_0, H_0]$ and $F_i(w_S \mid \cdot) = 1$; in particular the boundary transition $q_{i,k,S-1}$ is well defined. Construct a discretized model by defining transition probabilities between grid points: for each non-root $i$ and $k, \ell \in \{0, \ldots, S-1\}$,
 \[
 q_{i,k,\ell} \;:=\; F_i(w_{\ell+1} \mid w_k) - F_i(w_\ell \mid w_k).
 \]
@@ -41,44 +41,44 @@ e^{-d K_0 \varepsilon_0} \;\le\; \frac{\prod_{l=1}^d f_{m_l}(v_{m_l} \mid v_{\Pa
 Since any path in the tree has length at most $N$, integrating over cells and using the Markov factorization $\calF(\bmv_{\Subtree(j)} \mid v_i) = \prod_{m \in \Subtree(j)} f_m(v_m \mid v_{\Parent(m)})$:
 \begin{equation}
 \label{eq:fptas:prob-bound}
-e^{-NK_0\varepsilon_0}\,\Pr_{\hat{\calF}}[A] \;\le\; \Pr_{\calF}[A \mid v_i] \;\le\; e^{NK_0\varepsilon_0}\,\Pr_{\hat{\calF}}[A \mid w_{k(v_i)}],
+e^{-dK_0\varepsilon_0}\,\Pr_{\hat{\calF}}[A] \;\le\; \Pr_{\calF}[A \mid v_i] \;\le\; e^{dK_0\varepsilon_0}\,\Pr_{\hat{\calF}}[A \mid w_{k(v_i)}],
 \end{equation}
 for any event $A$ that depends on $\bmv_{\Subtree(j)}$ only through cell indices.
 
 \emph{Gain bound.} Fix a node $i$ with $v_i \in [w_{k_i}, w_{k_i+1})$. Because the lifted strategies are piecewise constant over grid cells, for each child $j$ the optimum of $G^{(j)}_i(v_i, \cdot)$ over $\bbR_+$ is attained on the finite grid $\calP_j = \{s^*(j,\ell)\}_\ell$, for both the true and the discretized models (the candidate-price argument of \cref{thm:algo-exact}). As the per-subtree profit $R^{(j)}_i \ge 0$ depends on $\bmv_{\Subtree(j)}$ only through cell indices, \eqref{eq:fptas:prob-bound} gives, for every $p \in \calP_j$,
 \begin{equation}
 \label{eq:prf:fptas:gain-upper}
-e^{-N K_0 \varepsilon_0}\, G^{(j)}_{\hat{\calF},i}(w_{k_i}, p) \;\le\; G^{(j)}_i(v_i, p) \;\le\; e^{N K_0 \varepsilon_0}\, G^{(j)}_{\hat{\calF},i}(w_{k_i}, p).
+e^{-d K_0 \varepsilon_0}\, G^{(j)}_{\hat{\calF},i}(w_{k_i}, p) \;\le\; G^{(j)}_i(v_i, p) \;\le\; e^{d K_0 \varepsilon_0}\, G^{(j)}_{\hat{\calF},i}(w_{k_i}, p).
 \end{equation}
 Writing $M_i \coloneqq \sum_{j} \max_{p \in \calP_j} G^{(j)}_i(v_i, p)$ and $\widehat{M}_i \coloneqq \sum_{j} \max_{p \in \calP_j} G^{(j)}_{\hat{\calF},i}(w_{k_i}, p)$ (both nonnegative), taking the max over $\calP_j$ and summing over $j$ yields
 \begin{equation}
 \label{eq:prf:fptas:M}
-e^{-N K_0 \varepsilon_0}\, \widehat{M}_i \;\le\; M_i \;\le\; e^{N K_0 \varepsilon_0}\, \widehat{M}_i .
+e^{-d K_0 \varepsilon_0}\, \widehat{M}_i \;\le\; M_i \;\le\; e^{d K_0 \varepsilon_0}\, \widehat{M}_i .
 \end{equation}
 By \cref{def:eps-equilibrium}, the best-response threshold under the lifted profile is $\ts^\dagger_i(v_i) = v_i + M_i$, while the algorithm outputs $\ts^*_i(v_i) = s^*(i,k_i) = w_{k_i} + \widehat{M}_i$ (the exact discretized equilibrium, \cref{eq:prf:algo:threshold}).
 
-\emph{Threshold accuracy.} Let $R \coloneqq \max(|L_0|, |H_0|)$, so that $|v_i| \le R$. From~\eqref{eq:prf:fptas:M}, $|\widehat{M}_i - M_i| \le (e^{N K_0 \varepsilon_0} - 1) M_i$; combined with $0 \le v_i - w_{k_i} < \varepsilon_0$,
+\emph{Threshold accuracy.} Let $R \coloneqq \max(|L_0|, |H_0|)$, so that $|v_i| \le R$. From~\eqref{eq:prf:fptas:M}, $|\widehat{M}_i - M_i| \le (e^{d K_0 \varepsilon_0} - 1) M_i$; combined with $0 \le v_i - w_{k_i} < \varepsilon_0$,
 \[
-|\ts^*_i(v_i) - \ts^\dagger_i(v_i)| = \big|(w_{k_i} - v_i) + (\widehat{M}_i - M_i)\big| \;\le\; \varepsilon_0 + (e^{N K_0 \varepsilon_0} - 1)\, M_i .
+|\ts^*_i(v_i) - \ts^\dagger_i(v_i)| = \big|(w_{k_i} - v_i) + (\widehat{M}_i - M_i)\big| \;\le\; \varepsilon_0 + (e^{d K_0 \varepsilon_0} - 1)\, M_i .
 \]
 Since $M_i = \ts^\dagger_i(v_i) - v_i \le \ts^\dagger_i(v_i) + R \le (1+R)\max\{1, \ts^\dagger_i(v_i)\}$ and $e^x - 1 \le 2x$ for $x \in [0,1]$,
 \[
-|\ts^*_i(v_i) - \ts^\dagger_i(v_i)| \;\le\; \varepsilon_0\big(1 + 2 N K_0 (1+R)\big)\max\{1, \ts^\dagger_i(v_i)\}.
+|\ts^*_i(v_i) - \ts^\dagger_i(v_i)| \;\le\; \varepsilon_0\big(1 + 2 d K_0 (1+R)\big)\max\{1, \ts^\dagger_i(v_i)\}.
 \]
 
-\emph{Pricing near-optimality.} The chosen price $\tp^*_j(v_i) = p^*(j,k_i)$ maximizes $G^{(j)}_{\hat{\calF},i}(w_{k_i}, \cdot)$ over $\calP_j$, so applying the two sides of~\eqref{eq:prf:fptas:gain-upper} gives $G^{(j)}_i(v_i, \tp^*_j(v_i)) \ge e^{-2 N K_0 \varepsilon_0} \max_{p \in \calP_j} G^{(j)}_i(v_i, p)$. With $1 - e^{-y} \le y$,
+\emph{Pricing near-optimality.} The chosen price $\tp^*_j(v_i) = p^*(j,k_i)$ maximizes $G^{(j)}_{\hat{\calF},i}(w_{k_i}, \cdot)$ over $\calP_j$, so applying the two sides of~\eqref{eq:prf:fptas:gain-upper} gives $G^{(j)}_i(v_i, \tp^*_j(v_i)) \ge e^{-2 d K_0 \varepsilon_0} \max_{p \in \calP_j} G^{(j)}_i(v_i, p)$. With $1 - e^{-y} \le y$,
 \[
-\max_{p \ge 0} G^{(j)}_i(v_i, p) - G^{(j)}_i(v_i, \tp^*_j(v_i)) \;\le\; 2 N K_0 \varepsilon_0\, M_i \;\le\; 2 N K_0 \varepsilon_0 (1+R)\max\{1, \ts^\dagger_i(v_i)\}.
+\max_{p \ge 0} G^{(j)}_i(v_i, p) - G^{(j)}_i(v_i, \tp^*_j(v_i)) \;\le\; 2 d K_0 \varepsilon_0\, M_i \;\le\; 2 d K_0 \varepsilon_0 (1+R)\max\{1, \ts^\dagger_i(v_i)\}.
 \]
 
 \emph{Choice of $\varepsilon_0$.} Setting
 \begin{equation}
 \label{eq:prf:fptas:eps0}
-\varepsilon_0 = \frac{\min(\varepsilon,1)}{8\,(1 + N K_0)\,(1 + R)}, \qquad R = \max(|L_0|, |H_0|),
+\varepsilon_0 = \frac{\min(\varepsilon,1)}{8\,(1 + d K_0)\,(1 + R)}, \qquad R = \max(|L_0|, |H_0|),
 \end{equation}
-ensures $N K_0 \varepsilon_0 \le \tfrac18 \le 1$ and bounds both bracketed factors above by $\varepsilon$. Hence conditions~(a) and~(b) of \cref{def:eps-equilibrium} hold for every player, so the lifted profile is an $\varepsilon$-approximate equilibrium. (The definition $R = \max(|L_0|,|H_0|)$ covers $H_0 < 0$ as well, since then all valuations lie in $[L_0, H_0]$ with $|v_i| \le |L_0| = R$.)
+ensures $d K_0 \varepsilon_0 \le \tfrac18 \le 1$ and bounds both bracketed factors above by $\varepsilon$. Hence conditions~(a) and~(b) of \cref{def:eps-equilibrium} hold for every player, so the lifted profile is an $\varepsilon$-approximate equilibrium. (The definition $R = \max(|L_0|,|H_0|)$ covers $H_0 < 0$ as well, since then all valuations lie in $[L_0, H_0]$ with $|v_i| \le |L_0| = R$.)
 
 \paragraph{Complexity.}
-The grid size is $S = O(\varepsilon_0^{-1}(H_0 - L_0)) = O(NK_0(H_0-L_0)(1+|L_0|)/\varepsilon)$. The exact algorithm runs in $O(N^2 S^4)$ time, giving overall complexity $\poly(N, \varepsilon^{-1}, H_0-L_0, K_0)$.
+The grid size is $S = O(\varepsilon_0^{-1}(H_0 - L_0)) = O(dK_0(H_0-L_0)(1+|L_0|)/\varepsilon)$. The exact algorithm runs in $O(N d\, S^4)$ time, giving overall complexity $\poly(N, \varepsilon^{-1}, H_0-L_0, K_0)$.
 \qed
 \end{proof}
