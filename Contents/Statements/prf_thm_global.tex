@@ -1,9 +1,9 @@
 \begin{proof}
-We interpolate from $\pi^0$ to $\pi$ through a sequence of mechanisms, each consecutive pair differing locally at a \emph{single} trade in the sense of \cref{def:local-diff}, and then chain the trade-event inclusions of \cref{thm:partial}. The key point is how to construct a sequence of mechanisms that satisfying this condition.
+We interpolate from $\pi^0$ to $\pi$ through a sequence of mechanisms in which each mechanism locally dominates its predecessor at a \emph{single} trade in the sense of \cref{def:local-diff}, and then chain the trade-event inclusions of \cref{thm:partial}. The key point is how to construct a sequence of mechanisms that satisfying this condition.
 
 We list the non-leaf players $\calI \setminus \calL$ as $i_1, \ldots, i_M$ in a bottom-up order, so that every player $i$ precedes all players in $\Path(i)$. For each $i_m$, enumerate its children $\Children(i_m) = \{j_{m,1}, \ldots, j_{m,d_m}\}$ in any fixed order.
 We will define atomic operations indexed by the pairs $(m,t)$, $1 \le m \le M$, $1 \le t \le d_m$, and take each operation in lexicographic order starting with $\pi^0$; there are $\sum_m d_m = N-1$ number of such operation, with each operation corresponding to a trade.
-Specifically, operation $(m,t)$ switches player $i_m$'s reallocation \emph{from the subtree} $\Subtree(j_{m,t})$ from $\pi^0$ to $\pi$, leaving everything else unchanged. Writing $\sigma\in\{1,...,N-1\}$ as the integer index of $(m,t)$, this defines mechanisms $\pi^{[0]} = \pi^0, \pi^{[1]}, \ldots, \pi^{[T]} = \pi$ by
+Specifically, operation $(m,t)$ switches player $i_m$'s reallocation \emph{from the subtree} $\Subtree(j_{m,t})$ from $\pi^0$ to $\pi$, leaving everything else unchanged. Writing $\sigma\in\{1,...,N-1\}$ as the integer index of $(m,t)$, this defines mechanisms $\pi^{[0]} = \pi^0, \pi^{[1]}, \ldots, \pi^{[N-1]} = \pi$ by
 \[
 \pi^{[\sigma]}(n, k) \;=\;
 \begin{cases}
@@ -14,11 +14,11 @@ Specifically, operation $(m,t)$ switches player $i_m$'s reallocation \emph{from 
 Equivalently, for trade index $n \in \calI \backslash \{r\}$ and player index $k\in \calI \backslash \calL$ where $k \in \Path(n)$, $\pi^{[\sigma]}(n,k)$ equals the target $\pi(n,k)$ once the operation indexed by the pair $\big(k,(\Path(n)\cup\{n\}) \cap \Children(k) \big)$\footnote{Here $(\Path(n)\cup\{n\}) \cap \Children(k)$ means player $k$'s only child that lies in the path between player $k$ and player $n$.} has occurred, and equals the baseline $\pi^0(n,k)$ otherwise.
 Let $(\tbmp^{[\sigma],*}, \tbms^{[\sigma],*})$ be the equilibrium under $\pi^{[\sigma]}$ and abbreviate $E^{[\sigma]}_n \coloneqq E_n(\tbmp^{[\sigma],*}, \tbms^{[\sigma],*})$.
 
-Fix operation $(m,t)$ and write $i \coloneqq i_m$, $j \coloneqq j_{m,t}$, $\pi^- \coloneqq \pi^{[\sigma-1]}$, $\pi^+ \coloneqq \pi^{[\sigma]}$. By construction $\pi^-$ and $\pi^+$ agree everywhere except on $\{\pi(n,i) : n \in \Subtree(j)\}$. We verify that $\pi^-$ and $\pi^+$ differs locally as in \cref{def:local-diff}:
+Fix operation $(m,t)$ and write $i \coloneqq i_m$, $j \coloneqq j_{m,t}$, $\pi^- \coloneqq \pi^{[\sigma-1]}$, $\pi^+ \coloneqq \pi^{[\sigma]}$. By construction $\pi^-$ and $\pi^+$ agree everywhere except on $\{\pi(n,i) : n \in \Subtree(j)\}$. We verify that $\pi^+$ locally dominates $\pi^-$ at trade $j$ (\cref{def:local-diff}), \ie, $\pi^+$ plays the role of $\pi^1$ and $\pi^-$ that of $\pi^2$:
 \begin{itemize}[left=0em]\itemsep0.1em
-\item[(a)] only reallocation to $i$ changes, so $\pi^-(n,k) = \pi^+(n,k)$ for all $k \neq i$;
-\item[(b)] the one-shot share $\pi(j,i)$ is set only at this operation, so $\pi^-(j,i) = \pi^0(j,i) = 1 \ge \pi(j,i) = \pi^+(j,i)$;
-\item[(c)] for $n \in \Desc(j)$, the share $\pi(n,i)$ is set only at this operation, so $\pi^-(n,i) = \pi^0(n,i) = 0 \le \pi(n,i) = \pi^+(n,i)$ (here $\pi^0(n,i)=0$ because $i = \Parent(j) \neq \Parent(n)$);
+\item[(a)] only reallocation to $i$ changes, so $\pi^+(n,k) = \pi^-(n,k)$ for all $k \neq i$;
+\item[(b)] the one-shot share $\pi(j,i)$ is set only at this operation, so $\pi^+(j,i) = \pi(j,i) \le 1 = \pi^0(j,i) = \pi^-(j,i)$;
+\item[(c)] for $n \in \Desc(j)$, the share $\pi(n,i)$ is set only at this operation, so $\pi^+(n,i) = \pi(n,i) \ge 0 = \pi^0(n,i) = \pi^-(n,i)$ (here $\pi^0(n,i)=0$ because $i = \Parent(j) \neq \Parent(n)$);
 \item[(d)] every strict ancestor $k \in \Path(i)$ follows $i$ in the bottom-up order, so no operation has yet altered reallocation \emph{to} $k$; hence $\pi^-(n,k) = \pi^+(n,k) = \pi^0(n,k)$ for all $n$ and all $k \in \Path(i)$;
 \item[(e)] $\pi^-(n,i) = \pi^+(n,i)$ for all $n \notin \Subtree(j)$, since operation $(m,t)$ only changes the mechanism within $\Subtree(j)$.
 \end{itemize}
@@ -30,6 +30,6 @@ We next show that $\pi^{[\sigma]}$ is a valid PRM (satisfying Path Only and Budg
 We consider two subcase: (a) If $K = \emptyset$, then $\sum_b \pi^{[\sigma]}(n,k_b) = \sum_b \pi^0(n,k_b) = 1$. (b) If $K = \{k_1, \ldots, k_a\}$, notice that $\pi^0(n,k_i) = 0$ for $i > a \ge 1$, thus $\sum_b \pi^{[\sigma]}(n,k_b) = \sum_{b \le a} \pi^{[\sigma]}(n,k_b) = \sum_{b \le a} \pi(n,k_b) \le \sum_{b} \pi(n,k_b) \le 1$ by feasibility of $\pi$. 
 \end{itemize}
 
-Thus $\pi^-$ and $\pi^+$ differ locally at $j$, and \cref{thm:partial} yields $E^{[\sigma-1]}_j \subseteq E^{[\sigma]}_j$ and $E^{[\sigma-1]}_{n} = E^{[\sigma]}_{n}$ for every other trade $n$.
-Composing the inclusions over all $T$ steps gives $E_j(\tbmp^{0,*}, \tbms^{0,*}) = E^{[0]}_j \subseteq E^{[T]}_j = E_j(\tbmp^*, \tbms^*)$ for all $j \in \calI \setminus \{r\}$.\qed
+Thus $\pi^+$ locally dominates $\pi^-$ at $j$, and \cref{thm:partial} yields $E^{[\sigma-1]}_j \subseteq E^{[\sigma]}_j$ (the dominated $\pi^-$ has the smaller trade event) and $E^{[\sigma-1]}_{n} = E^{[\sigma]}_{n}$ for every other trade $n$.
+Composing the inclusions over all $N-1$ steps gives $E_j(\tbmp^{0,*}, \tbms^{0,*}) = E^{[0]}_j \subseteq E^{[N-1]}_j = E_j(\tbmp^*, \tbms^*)$ for all $j \in \calI \setminus \{r\}$.\qed
 \end{proof}

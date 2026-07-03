@@ -17,7 +17,44 @@ The node set $\calI$ is the set of all players, with each directed edge pointing
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.66\textwidth]{Materials/example-tree.pdf}
+\resizebox{0.66\textwidth}{!}{%
+\begin{tikzpicture}[
+  >={Latex[length=1.8mm]},
+  vtx/.style={circle, draw, line width=0.5pt, minimum size=7.5mm, inner sep=0pt, font=\small},
+  rt/.style={vtx, fill=croot, text=white},
+  lf/.style={vtx, fill=cleaf, text=white},
+  rf/.style={vtx, fill=cref},
+  it/.style={vtx, fill=white},
+  ed/.style={->, line width=0.6pt, black!70},
+]
+% tree
+\node[rt] (r)   at (0,0)        {$r$};
+\node[lf] (l)   at (-1.5,-1.35) {$l$};
+\node[it] (u)   at (1.5,-1.35)  {$u$};
+\node[rf] (ul)  at (0.55,-2.75) {$ul$};
+\node[lf] (uu)  at (2.65,-2.75) {$uu$};
+\node[lf] (ull) at (-0.35,-4.1) {$ull$};
+\node[lf] (ulu) at (1.45,-4.1)  {$ulu$};
+\draw[ed] (r)--(l);  \draw[ed] (r)--(u);
+\draw[ed] (u)--(ul); \draw[ed] (u)--(uu);
+\draw[ed] (ul)--(ull); \draw[ed] (ul)--(ulu);
+% subtree box
+\begin{scope}[on background layer]
+\node[draw=cref, dashed, line width=1pt, rounded corners=3pt,
+      fit=(ul)(ull)(ulu), inner sep=7pt] (box) {};
+\end{scope}
+\node[text=cref, font=\small, anchor=south west] at ([xshift=-3pt,yshift=1.5pt]box.north west) {$\Subtree(ul)$};
+% legend
+\node[rt] (lr) at (5.0,0.05) {$r$};
+\node[right=1.2mm of lr, font=\small] {: root};
+\node[lf] (ll) at (5.0,-1.05) {$l$};
+\node[right=1.2mm of ll, font=\small] {: leaves};
+% info brace
+\node[anchor=west, font=\small] (info) at (4.55,-3.05)
+  {$\left\{\begin{array}{l}\Parent(ul)=u\\[5pt]\Children(ul)=\{ulu,ull\}\\[5pt]\Path(ul)=\{r,u\}\end{array}\right.$};
+\draw[->, dashed, line width=0.7pt, black!70] (ul.south east) to[out=-38,in=182] (info.west);
+\end{tikzpicture}%
+}
 \caption{An illustration of the tree notation on a $7$-player instance. The root $r$ is shown in blue and the leaves $\calL = \{uu, l, ulu, ull\}$ in green. Taking node $ul$ as the reference: its parent is $\Parent(ul) = u$, its children are $\Children(ul) = \{ulu, ull\}$, and its strict ancestors are $\Path(ul) = \{r, u\}$. The red dashed box marks $\Subtree(ul) = \{ul, ulu, ull\}$, so that $\Desc(ul) = \{ulu, ull\}$. Best viewed in color.}
 \label{fig:tree-notation}
 \end{figure}
@@ -127,7 +164,88 @@ The first term is player $i$'s own surplus from trade $i$; the second term aggre
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.9\textwidth]{Materials/example-game.pdf}
+\resizebox{0.9\textwidth}{!}{%
+\begin{tikzpicture}[
+  >={Latex[length=2mm]},
+  rootN/.style={circle, draw, minimum size=8mm, inner sep=0pt, fill=croot,   text=white, font=\small},
+  playerN/.style={circle, draw, minimum size=8mm, inner sep=0pt, fill=cplayer, text=white, font=\small},
+  leafN/.style={circle, draw, minimum size=8mm, inner sep=0pt, fill=cleaf,   text=white, font=\small},
+  db/.style={cylinder, shape border rotate=90, draw, aspect=0.28,
+             minimum width=6.5mm, minimum height=5.5mm, fill=cdb, font=\tiny, inner sep=1pt},
+  dyn/.style={font=\footnotesize, text=cdyn, align=left, inner sep=1pt},
+  val/.style={font=\footnotesize, inner sep=1pt},
+  ubox/.style={draw, rounded corners=2pt, font=\footnotesize, inner sep=3.5pt},
+  ed/.style={->, line width=0.6pt, black!70},
+  reOne/.style={->, line width=1pt, red!80!black},
+  reHalf/.style={->, line width=1pt, creall},
+  dcon/.style={-{Latex[length=1.6mm]}, dotted, line width=0.7pt, black!55},
+]
+% nodes
+\node[rootN]   (r)  at (0,0)        {$r$};
+\node[playerN] (l)  at (-3.4,-2.1)  {$l$};
+\node[playerN] (u)  at (3.4,-2.1)   {$u$};
+\node[leafN]   (ll) at (-5.1,-4.3)  {$ll$};
+\node[leafN]   (lu) at (-2.1,-4.3)  {$lu$};
+\node[leafN]   (ul) at (2.1,-4.3)   {$ul$};
+\node[leafN]   (uu) at (5.1,-4.3)   {$uu$};
+% data cylinders
+\node[db, left=1.5mm of r]  (dbr) {data};
+\node[db, left=1.5mm of u]  (dbu) {data};
+\node[db, left=1.5mm of uu] {data};
+% tree edges
+\draw[ed] (r)--(l); \draw[ed] (r)--(u);
+\draw[ed] (l)--(ll); \draw[ed] (l)--(lu);
+\draw[ed] (u)--(ul); \draw[ed] (u)--(uu);
+% valuations (internal nodes to the outer side to clear the child edges)
+\node[val, below=0.5mm of r]  {$v_r=0$};
+\node[val, anchor=east] at ([xshift=-1mm]l.west)   {$v_l=2$};
+\node[val, anchor=east] at ([xshift=-1mm]dbu.west) {$v_u=-1$};
+\node[val, below=0.5mm of ll] {$v_{ll}=3$};
+\node[val, below=0.5mm of lu] {$v_{lu}=4$};
+\node[val, below=0.5mm of ul] {$v_{ul}=5$};
+\node[val, below=0.5mm of uu] {$v_{uu}=6$};
+% game-dynamic labels (price offered / decision)
+\node[dyn, right=1mm of l]  {$p_l=2$\\$x_l=0$};
+\node[dyn, right=1mm of u]  {$p_u=1$\\$x_u=1$};
+\node[dyn, right=1mm of ll] {$p_{ll}=6$\\$x_{ll}=0$};
+\node[dyn, right=1mm of lu] {$p_{lu}=5$\\$x_{lu}=1$};
+\node[dyn, right=1mm of ul] {$p_{ul}=4$\\$x_{ul}=0$};
+\node[dyn, right=1mm of uu] {$p_{uu}=5$\\$x_{uu}=1$};
+% profit-reallocation arrows (both orange arrows share the same start point on uu)
+\coordinate (os) at (uu.north);
+\draw[reOne]  (u.north west) to[out=150,in=-32]
+      node[pos=0.5, right=0.6mm, font=\scriptsize, text=red!80!black] {$1$} (r.east);
+\draw[reHalf] (os) to[out=122,in=-42]
+      node[pos=0.42, left=0.4mm, font=\scriptsize, text=creall] {$0.5$} (u.south east);
+\draw[reHalf] (os) to[out=76,in=-14]
+      node[pos=0.10, right=0.4mm, font=\scriptsize, text=creall] {$0.5$} (r.east);
+% utility boxes
+\node[ubox, anchor=west] (Ur)  at (7.6,0.1)   {$U_r={\color{black}0}+{\color{red!80!black}1}\!\cdot\!{\color{cdyn}1}+{\color{creall}0.5}\!\cdot\!{\color{cdyn}5}=3.5$};
+\node[ubox, anchor=west] (Uu)  at (7.6,-2.4)  {$U_u={\color{black}-1}-{\color{cdyn}1}+{\color{creall}0.5}\!\cdot\!{\color{cdyn}5}=0.5$};
+\node[ubox, anchor=west] (Uuu) at (7.6,-4.3)  {$U_{uu}={\color{black}6}-{\color{cdyn}5}=1$};
+\draw[dcon] (Ur.west)  to[bend right=8] (r.east);
+\draw[dcon] (Uu.west)  -- (u.east);
+\draw[dcon] (Uuu.west) -- (uu.east);
+% brace + boxes for zero utilities
+\draw[decorate, decoration={brace, amplitude=5pt, mirror}, black!70]
+      ([yshift=-6mm]ll.south) -- ([yshift=-6mm]lu.south);
+\node[ubox, below=13mm of $(ll)!0.5!(lu)$] {$U_l=U_{ll}=U_{lu}=0$};
+\node[ubox, below=9mm of ul] {$U_{ul}=0$};
+% legend
+\begin{scope}[shift={(-5.3,-6.65)}]
+  \node[rootN, scale=0.8] (lgp) at (0,0) {$r$};
+  \node[right=1mm of lgp, font=\footnotesize] (lgpt) {: player};
+  \node[right=6mm of lgpt, font=\footnotesize] (lgv) {$v_r$: private valuation};
+  \node[right=6mm of lgv, font=\footnotesize, text=cdyn] (lgd) {$p_u,x_u$};
+  \node[right=1mm of lgd, font=\footnotesize] (lgdt) {: game dynamic};
+  \coordinate (a0) at ([xshift=7mm]lgdt.east);
+  \draw[reHalf] (a0) -- ($(a0)+(0.8,0)$) node[midway, above=0.3mm, font=\scriptsize, text=creall] {$0.5$};
+  \coordinate (a1) at ($(a0)+(1.25,0)$);
+  \draw[reOne] (a1) -- ($(a1)+(0.8,0)$) node[midway, above=0.3mm, font=\scriptsize, text=red!80!black] {$1$};
+  \node[anchor=west, font=\footnotesize] at ($(a1)+(0.95,0)$) {: profit reallocation};
+\end{scope}
+\end{tikzpicture}%
+}
 \caption{A running example of the tree-based data trading game. Best viewed in color.}
 \label{fig:example}
 \end{figure*}
@@ -152,8 +270,6 @@ Player $i$'s \emph{information set} is the pair $(h_i, v_i)$ of her observed his
 \bbU_i\big((\tbmp, \tbmx), \mu_i \mid h_i, v_i\big) \;\coloneqq\; \bbE_{\bmv_{-i} \sim \mu_i(\cdot \mid h_i, v_i)}\!\big[\, U_i\big(h(\tbmp, \tbmx;\, (v_i, \bmv_{-i})); v_i\big)\big],
 \end{equation}
 where $U_i$ is the realized utility~\eqref{eq:utility-raw} and $h(\cdot\,; \bmv)$ the terminal history generated by the game dynamics (\cref{def:game-evolve}).
-
-\myx{TBA: check later.}
 
 \begin{definition}[Perfect Bayesian Equilibrium~\citep{fudenberg1991game,MWG}]
 \label{def:pbe}

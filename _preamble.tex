@@ -21,6 +21,7 @@
 \usepackage{thmtools}
 \usepackage{thm-restate}
 \usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds,decorations.pathreplacing,shapes.geometric}
 \usepackage{xcolor}
 \usepackage[margin=1in]{geometry}
 
@@ -37,6 +38,15 @@
 \Crefname{example}{Example}{Examples}
 
 \definecolor{pku-red}{RGB}{139,0,18}
+
+% Figure palette (shared by the illustrative TikZ figures)
+\definecolor{croot}{RGB}{31,119,180}   % root node (blue)
+\definecolor{cleaf}{RGB}{46,160,67}     % leaf nodes (green)
+\definecolor{cref}{RGB}{240,110,110}    % highlighted reference node / subtree box (salmon)
+\definecolor{cplayer}{RGB}{26,188,188}  % interior trading players (teal)
+\definecolor{creall}{RGB}{230,145,25}   % profit-reallocation arrows (orange)
+\definecolor{cdyn}{RGB}{31,119,180}     % game-dynamic labels (blue)
+\definecolor{cdb}{RGB}{245,224,140}     % data cylinder fill
 
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

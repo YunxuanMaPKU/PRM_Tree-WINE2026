@@ -2,7 +2,7 @@
 \label{sec:theoretic}
 
 This section establishes that profit reallocation mechanisms on trees expand equilibrium trade events compared with the baseline mechanism. As there may be multiple equilibria, we fix the simplified perfect Bayesian equilibrium $(\tbmp^*, \tbms^*)$ satisfying~\eqref{SE:transform}, constructed by the backward induction of \cref{lem:simplify-sell,cor:simplify-buy}.
-Ties in each $\argmax$ is resolved by choosing the \emph{smallest} element. This tie-breaking rule is independent of $\pi$, thus does not provide advantages to some specific PRM. We impose two additional assumptions:
+Ties in each $\argmax$ are resolved by choosing the \emph{smallest} element. This tie-breaking rule is independent of $\pi$, thus does not provide advantages to some specific PRM. We impose two additional assumptions:
 
 \begin{assumption}[Positivity]
 \label{asp:posi}
@@ -30,31 +30,32 @@ E_j(\tbmp, \tbms) \;\coloneqq\; \big\{\bmv \in \calV : \ts_j(v_j) \ge \tp_j(v_{\
 \subsection{Local Comparison between Mechanisms}
 \label{subsec:partial}
 
-We first compare two PRMs that differ only along a single trade.
+We first compare two PRMs that reallocate profit differently along a single trade, where one rewards the upstream seller more from downstream resale than the other. This relation is inherently asymmetric, so we phrase it as \emph{local dominance} rather than a symmetric difference.
 
-\begin{definition}[Local Difference]
+\begin{definition}[Local Dominance]
 \label{def:local-diff}
-For a non-root player $j \in \calI \setminus \{r\}$, let $i \coloneqq \Parent(j)$. Two PRMs $\pi^1$ and $\pi^2$ \emph{differ locally at trade $j$} if:
+For a non-root player $j \in \calI \setminus \{r\}$, let $i \coloneqq \Parent(j)$. A PRM $\pi^1$ \emph{locally dominates} another PRM $\pi^2$ \emph{at trade $j$} if:
 \begin{enumerate}[label=(\alph*),left=0em]
 \item $\pi^1(m, k) = \pi^2(m, k)$ for all $m \in \calI \setminus \{r\}$ and all $k \in \calI \setminus \{i\}$.
-\item $\pi^1(j, i) \ge \pi^2(j, i)$: player $i$'s one-shot profit from trade $j$ weakly decreases from $\pi^1$ to $\pi^2$.
-\item $\pi^1(m, i) \le \pi^2(m, i)$ for all $m \in \Desc(j)$: player $i$'s reallocated profit from downstream trades weakly increases.
+\item $\pi^1(j, i) \le \pi^2(j, i)$: player $i$'s one-shot profit from trade $j$ is weakly smaller under $\pi^1$.
+\item $\pi^1(m, i) \ge \pi^2(m, i)$ for all $m \in \Desc(j)$: player $i$'s reallocated profit from downstream trades is weakly larger under $\pi^1$.
 \item $\pi^1(m, k) = \pi^2(m, k) = \pi^0(m, k)$ for all $k \in \Path(i)$ and all $m \in \calI \setminus \{r\}$: both mechanisms use baseline allocation for all strict ancestors of $i$.
 \item $\pi^1(m, i) = \pi^2(m, i)$ for all $m \notin \Subtree(j)$: player $i$'s reallocation is unchanged outside $\Subtree(j)$.
 \end{enumerate}
+That is, relative to $\pi^2$, the dominating mechanism $\pi^1$ shifts $i$'s reward away from its one-shot payment on trade $j$ toward the downstream resale within $\Subtree(j)$, leaving everything else fixed.
 \end{definition}
 
 \begin{restatable}{theorem}{thmPartial}
 \label{thm:partial}
-Let $\calF$ satisfy \cref{asp:markov,asp:posi,asp:homo}. Let $\pi^1, \pi^2$ be two PRMs that differ locally at trade $j$ (\cref{def:local-diff}). Let $(\tbmp^{k,*}, \tbms^{k,*})$ be the equilibrium under $\pi^k$ for $k \in \{1,2\}$. Then:
+Let $\calF$ satisfy \cref{asp:markov,asp:posi,asp:homo}. Let $\pi^1$ locally dominate $\pi^2$ at trade $j$ (\cref{def:local-diff}). Let $(\tbmp^{k,*}, \tbms^{k,*})$ be the equilibrium under $\pi^k$ for $k \in \{1,2\}$. Then:
 \begin{enumerate}
 \item $E_m(\tbmp^{1,*}, \tbms^{1,*}) = E_m(\tbmp^{2,*}, \tbms^{2,*})$ for all $m \in \calI \setminus \{r\}$ with $m \neq j$.
-\item $E_j(\tbmp^{1,*}, \tbms^{1,*}) \subseteq E_j(\tbmp^{2,*}, \tbms^{2,*})$.
+\item $E_j(\tbmp^{2,*}, \tbms^{2,*}) \subseteq E_j(\tbmp^{1,*}, \tbms^{1,*})$.
 \end{enumerate}
 \end{restatable}
 
 \emph{Proof Sketch.}
-Write $i \coloneqq \Parent(j)$. Passing from $\pi^1$ to $\pi^2$ only reallocates revenue \emph{to} $i$, and only from within $\Subtree(j)$ (conditions (a)--(e)); every other reallocation is fixed. We show each trade event $E_m$ with $m\neq j$ is unchanged, then analyze trade $j$.
+Write $i \coloneqq \Parent(j)$. The two mechanisms differ only in how they reward $i$, and only from within $\Subtree(j)$ (conditions (a)--(e)); every other reallocation is fixed. We show each trade event $E_m$ with $m\neq j$ is unchanged, then analyze trade $j$.
 
 \emph{(i) $m\notin\Subtree(i)\cup\Path(i)$ and (ii) $m\in\Desc(j)$.} These equilibria are computed inside subtrees whose \emph{internal} reallocations are same between $\pi_1$ and $\pi_2$, so their strategies, hence $E_m$, are identical.
 
@@ -63,7 +64,7 @@ Write $i \coloneqq \Parent(j)$. Passing from $\pi^1$ to $\pi^2$ only reallocates
 
 \emph{(iv) Path trades $m\in\Path(i)\cup\{i\}$.} Both $\pi_1$ and $\pi_2$ use the baseline mechanism along this path (condition (d)), so the seller collects only her \emph{one-shot} payment. We first derive a homogeneity scaling lemma (\cref{lem:scaling} in \cref{sec:omitted-proofs}): $\ts_m(v_m)$ is linear in $v_m$, and hence $E_m = \{\bmv : v_m/v_{\Parent(m)} \ge \tau_m\}$ with $\tau_m$ depending only on $F_m$. Therefore, $E_m$ is identical between $\pi_1$ and $\pi_2$.
 
-\emph{Trade $j$.} By (ii), all strategies within $\Subtree(j)$ are unchanged, so $\ts_j$ is identical between $\pi_1$ and $\pi_2$. Only the price $\tp_j$ may differ. Split $i$'s gain $G^{(j)}_i = r_i + d_i$ into the one-shot revenue $r_i$ from $j$ and the reallocated revenue $d_i$ from $\Desc(j)$. From $\pi^1$ to $\pi^2$, $i$'s one-shot revenue shrinks (condition (b)) and its reallocated revenue grow (condition (c)): $i$ earns \emph{less} directly from $j$ and \emph{more} from what $j$ resells. As the reallocated revenue accrues only when $j$ buys and then resells, $i$ is incentivized to induce more downstream trade, and its only lever is to \emph{lower} $\tp_j$, admitting more willingness for player $j$ to buy, and resulting $E_j(\tbmp^{1,*}, \tbms^{1,*}) \subseteq E_j(\tbmp^{2,*}, \tbms^{2,*})$.
+\emph{Trade $j$.} By (ii), all strategies within $\Subtree(j)$ are unchanged, so $\ts_j$ is identical between $\pi_1$ and $\pi_2$. Only the price $\tp_j$ may differ. Split $i$'s gain $G^{(j)}_i = r_i + d_i$ into the one-shot revenue $r_i$ from $j$ and the reallocated revenue $d_i$ from $\Desc(j)$. Under the dominating $\pi^1$, $i$'s one-shot revenue is smaller (condition (b)) and its reallocated revenue is larger (condition (c)): $i$ earns \emph{less} directly from $j$ and \emph{more} from what $j$ resells. As the reallocated revenue accrues only when $j$ buys and then resells, $i$ is incentivized to induce more downstream trade, and its only lever is to \emph{lower} $\tp_j$, admitting more willingness for player $j$ to buy, and resulting $E_j(\tbmp^{2,*}, \tbms^{2,*}) \subseteq E_j(\tbmp^{1,*}, \tbms^{1,*})$.
 \qed
 
 \subsection{Comparison with Baseline Mechanism}

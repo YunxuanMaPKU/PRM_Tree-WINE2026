@@ -1,5 +1,5 @@
 \begin{proof}
-For $k \in \{1, 2\}$, abbreviate the trade-event of trade $m$ under mechanism $\pi^k$ as $E^k_m \coloneqq E_m(\tbmp^{k,*}, \tbms^{k,*})$. We prove Part~(1) ($E^1_m = E^2_m$ for $m \neq j$) and Part~(2) ($E^1_j \subseteq E^2_j$) separately.
+For $k \in \{1, 2\}$, abbreviate the trade-event of trade $m$ under mechanism $\pi^k$ as $E^k_m \coloneqq E_m(\tbmp^{k,*}, \tbms^{k,*})$. We prove Part~(1) ($E^1_m = E^2_m$ for $m \neq j$) and Part~(2) ($E^2_j \subseteq E^1_j$) separately.
 
 \paragraph{Proof of Part~(1).}
 We partition the trades $m \in \calI \setminus \{r\}$ with $m \neq j$ into four groups: (A) $m \in \Desc(j)$; (B) $m \in \Subtree(c)$ for a sibling $c \in \Children(i) \setminus \{j\}$; (C) $m \in \Path(i) \cup \{i\}$, the trades on the root-to-$i$ path together with trade $i$; and (D) the remaining trades, $m \notin \Subtree(i) \cup \Path(i)$. Since $\Desc(i) = \bigsqcup_{c \in \Children(i)} \Subtree(c)$ and $\Subtree(i) = \{i\} \cup \Desc(i)$, these four groups partition $\{m \neq j\}$.
@@ -22,9 +22,9 @@ The seller in trade $m$ is $\Parent(m)$, and $\Parent(m) \in \Path(i)$: for $m \
 Here $i \notin \Subtree(m)$, and $\Subtree(m)$ is disjoint from $\Subtree(i) \supseteq \Subtree(j)$. By condition~(a) the two mechanisms differ only in reallocation to $i$, and by conditions~(b),(c),(e) these differences occur only on trades in $\Subtree(j)$; none lie in $\Subtree(m)$. Hence both the threshold $\ts^*_m$ (computed within $\Subtree(m)$) and the price $\tp^*_m$ offered by $\Parent(m)$ (the maximizer of $G^{(m)}_{\Parent(m)}$, which by \cref{lem:subtree-decomp} depends only on reallocations within $\Subtree(m)$) are identical under $\pi^1$ and $\pi^2$, so $E^1_m = E^2_m$.
 
 \paragraph{Proof of Part~(2).}
-Since $\ts^{1,*}_j = \ts^{2,*}_j$ (proven in Part~(1)), it suffices to show $\tp^{2,*}_j(v_i) \le \tp^{1,*}_j(v_i)$ for all $v_i$, because then:
+Since $\ts^{1,*}_j = \ts^{2,*}_j$ (proven in Part~(1)), it suffices to show $\tp^{1,*}_j(v_i) \le \tp^{2,*}_j(v_i)$ for all $v_i$, because then:
 \[
-E^1_j = \{\bmv : \ts^*_j(v_j) \ge \tp^{1,*}_j(v_i)\} \subseteq \{\bmv : \ts^*_j(v_j) \ge \tp^{2,*}_j(v_i)\} = E^2_j.
+E^2_j = \{\bmv : \ts^*_j(v_j) \ge \tp^{2,*}_j(v_i)\} \subseteq \{\bmv : \ts^*_j(v_j) \ge \tp^{1,*}_j(v_i)\} = E^1_j.
 \]
 We decompose the gain function $G^{(j),k}_i(v_i, p_j)$ under mechanism $\pi^k$ into one-shot and future components:
 \begin{equation}
@@ -40,37 +40,37 @@ Here $r^k_i$ is the one-shot profit from trade $j$, and $d^k_i$ is the future re
 
 Let $p^k = \tp^{k,*}_j(v_i)$ denote the optimal price under $\pi^k$. We establish two key monotonicity properties:
 
-\emph{Property 1.} If $\pi^1(j,i) = 0$, then condition~(b) forces $\pi^2(j,i) = 0$, so $r^1_i \equiv r^2_i \equiv 0$, $\Delta r_i \equiv 0$, and the implication~\eqref{eq:prf:partial:prop1} below holds trivially; assume henceforth $\pi^1(j,i) > 0$. Since $\ts^{1,*}_j = \ts^{2,*}_j$, we have $r^2_i(v_i, p) = \frac{\pi^2(j,i)}{\pi^1(j,i)}\, r^1_i(v_i, p)$ with coefficient $\frac{\pi^2(j,i)}{\pi^1(j,i)} \le 1$ by condition~(b). Consequently, for any $p, p'$:
+\emph{Property 1.} If $\pi^2(j,i) = 0$, then condition~(b) forces $\pi^1(j,i) = 0$, so $r^1_i \equiv r^2_i \equiv 0$, $\Delta r_i \equiv 0$, and the implication~\eqref{eq:prf:partial:prop1} below holds trivially; assume henceforth $\pi^2(j,i) > 0$. Since $\ts^{1,*}_j = \ts^{2,*}_j$, we have $r^1_i(v_i, p) = \frac{\pi^1(j,i)}{\pi^2(j,i)}\, r^2_i(v_i, p)$ with coefficient $\frac{\pi^1(j,i)}{\pi^2(j,i)} \le 1$ by condition~(b). Consequently, for any $p, p'$:
 \begin{equation}
 \label{eq:prf:partial:prop1}
-r^2_i(v_i, p) \ge r^2_i(v_i, p') \quad\Longrightarrow\quad \Delta r_i(v_i, p) \le \Delta r_i(v_i, p'),
+r^1_i(v_i, p) \ge r^1_i(v_i, p') \quad\Longrightarrow\quad \Delta r_i(v_i, p) \le \Delta r_i(v_i, p'),
 \end{equation}
-where $\Delta r_i \coloneqq r^2_i - r^1_i$, because $\Delta r_i = (\frac{\pi^2(j,i)}{\pi^1(j,i)} - 1) r^1_i$ and the coefficient is nonpositive.
+where $\Delta r_i \coloneqq r^1_i - r^2_i$, because $\Delta r_i = (\frac{\pi^1(j,i)}{\pi^2(j,i)} - 1) r^2_i$ and the coefficient is nonpositive.
 
-\emph{Property 2.} For $p' > p$, we have $\one\{\ts^*_j(v_j) \ge p'\} \le \one\{\ts^*_j(v_j) \ge p\}$ pointwise. Since prices are nonnegative and $y_{m|j} \in \{0,1\}$, the integrand in $d^k_i$ is nonnegative and is multiplied by $\one\{\ts^*_j(v_j) \ge p\}$, so $d^k_i(v_i, p)$ is weakly decreasing in $p$. For $\Delta d_i(v_i, p) \coloneqq d^2_i(v_i, p) - d^1_i(v_i, p)$:
+\emph{Property 2.} For $p' > p$, we have $\one\{\ts^*_j(v_j) \ge p'\} \le \one\{\ts^*_j(v_j) \ge p\}$ pointwise. Since prices are nonnegative and $y_{m|j} \in \{0,1\}$, the integrand in $d^k_i$ is nonnegative and is multiplied by $\one\{\ts^*_j(v_j) \ge p\}$, so $d^k_i(v_i, p)$ is weakly decreasing in $p$. For $\Delta d_i(v_i, p) \coloneqq d^1_i(v_i, p) - d^2_i(v_i, p)$:
 \begin{align*}
-\Delta d_i(v_i, p) &= \bbE\bigg[\one\{\ts^*_j(v_j) \ge p\} \cdot \sum_{m \in \Desc(j)} \big(\pi^2(m,i) - \pi^1(m,i)\big) \cdot p_m \cdot y_{m|j} \;\bigg|\; v_i\bigg].
+\Delta d_i(v_i, p) &= \bbE\bigg[\one\{\ts^*_j(v_j) \ge p\} \cdot \sum_{m \in \Desc(j)} \big(\pi^1(m,i) - \pi^2(m,i)\big) \cdot p_m \cdot y_{m|j} \;\bigg|\; v_i\bigg].
 \end{align*}
-By condition~(c), $\pi^2(m,i) - \pi^1(m,i) \ge 0$ for all $m \in \Desc(j)$, so the summand is nonnegative; hence $\Delta d_i(v_i, p)$ is also weakly decreasing in $p$.
+By condition~(c), $\pi^1(m,i) - \pi^2(m,i) \ge 0$ for all $m \in \Desc(j)$, so the summand is nonnegative; hence $\Delta d_i(v_i, p)$ is also weakly decreasing in $p$.
 
-Now suppose for contradiction that $p^2 > p^1$. By optimality of $p^2$ under $\pi^2$:
+Now suppose for contradiction that $p^1 > p^2$. By optimality of $p^1$ under $\pi^1$:
 \[
-G^{(j),2}_i(v_i, p^2) \ge G^{(j),2}_i(v_i, p^1).
+G^{(j),1}_i(v_i, p^1) \ge G^{(j),1}_i(v_i, p^2).
 \]
-Since $d^2_i$ is weakly decreasing in $p$ (Property~2) and $p^2 > p^1$, we have $d^2_i(v_i, p^2) \le d^2_i(v_i, p^1)$. Combined with the optimality inequality:
+Since $d^1_i$ is weakly decreasing in $p$ (Property~2) and $p^1 > p^2$, we have $d^1_i(v_i, p^1) \le d^1_i(v_i, p^2)$. Combined with the optimality inequality:
 \begin{equation}
 \label{eq:prf:partial:rstep}
-r^2_i(v_i, p^2) \ge r^2_i(v_i, p^1) \quad\Longrightarrow\quad \Delta r_i(v_i, p^2) \le \Delta r_i(v_i, p^1),
+r^1_i(v_i, p^1) \ge r^1_i(v_i, p^2) \quad\Longrightarrow\quad \Delta r_i(v_i, p^1) \le \Delta r_i(v_i, p^2),
 \end{equation}
 where the implication follows from Property~1. Define the quantity:
 \begin{align*}
-S \;&\coloneqq\; \big[G^{(j),1}_i(v_i, p^2) - G^{(j),1}_i(v_i, p^1)\big] - \big[G^{(j),2}_i(v_i, p^2) - G^{(j),2}_i(v_i, p^1)\big] \\
-&=\; \big[\Delta r_i(v_i, p^1) - \Delta r_i(v_i, p^2)\big] + \big[\Delta d_i(v_i, p^1) - \Delta d_i(v_i, p^2)\big] \;\ge\; 0,
+S \;&\coloneqq\; \big[G^{(j),2}_i(v_i, p^1) - G^{(j),2}_i(v_i, p^2)\big] - \big[G^{(j),1}_i(v_i, p^1) - G^{(j),1}_i(v_i, p^2)\big] \\
+&=\; \big[\Delta r_i(v_i, p^2) - \Delta r_i(v_i, p^1)\big] + \big[\Delta d_i(v_i, p^2) - \Delta d_i(v_i, p^1)\big] \;\ge\; 0,
 \end{align*}
-where the first bracket is $\ge 0$ by~\eqref{eq:prf:partial:rstep} and the second bracket is $\ge 0$ by Property~2 (since $\Delta d_i$ is weakly decreasing and $p^2 > p^1$). Since $G^{(j),2}_i(v_i, p^2) \ge G^{(j),2}_i(v_i, p^1)$ and $S \ge 0$:
+where the first bracket is $\ge 0$ by~\eqref{eq:prf:partial:rstep} and the second bracket is $\ge 0$ by Property~2 (since $\Delta d_i$ is weakly decreasing and $p^1 > p^2$). Since $G^{(j),1}_i(v_i, p^1) \ge G^{(j),1}_i(v_i, p^2)$ and $S \ge 0$:
 \[
-G^{(j),1}_i(v_i, p^2) \ge G^{(j),1}_i(v_i, p^1).
+G^{(j),2}_i(v_i, p^1) \ge G^{(j),2}_i(v_i, p^2).
 \]
-By optimality of $p^1$ under $\pi^1$, equality must hold: $G^{(j),1}_i(v_i, p^2) = G^{(j),1}_i(v_i, p^1)$. Then $S \ge 0$ forces $G^{(j),2}_i(v_i, p^2) = G^{(j),2}_i(v_i, p^1)$, so $p^1$ is also a maximizer of $G^{(j),2}_i(v_i, \cdot)$. But $p^1 < p^2$, and the smallest-maximizer tie-break selects the smallest maximizer under $\pi^2$; hence $p^2 = \tp^{2,*}_j(v_i) \le p^1$, contradicting $p^2 > p^1$. Therefore $\tp^{2,*}_j(v_i) \le \tp^{1,*}_j(v_i)$.
+By optimality of $p^2$ under $\pi^2$, equality must hold: $G^{(j),2}_i(v_i, p^1) = G^{(j),2}_i(v_i, p^2)$. Then $S \ge 0$ forces $G^{(j),1}_i(v_i, p^1) = G^{(j),1}_i(v_i, p^2)$, so $p^2$ is also a maximizer of $G^{(j),1}_i(v_i, \cdot)$. But $p^2 < p^1$, and the smallest-maximizer tie-break selects the smallest maximizer under $\pi^1$; hence $p^1 = \tp^{1,*}_j(v_i) \le p^2$, contradicting $p^1 > p^2$. Therefore $\tp^{1,*}_j(v_i) \le \tp^{2,*}_j(v_i)$.
 \qed
 \end{proof}
